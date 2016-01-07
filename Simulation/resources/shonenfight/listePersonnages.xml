@@ -1,0 +1,22 @@
+<Personnages>
+	<Personnage nom="Luffy" pointAttaque="4" pointVie="8"></Personnage>
+	<Personnage nom="Zoro" pointAttaque="4" pointVie="9"></Personnage>
+	<Personnage nom="Naruto" pointAttaque="3" pointVie="8"></Personnage>
+	<Personnage nom="Guts" pointAttaque="5" pointVie="10"></Personnage>
+	<Personnage nom="Ichigo" pointAttaque="2" pointVie="6"></Personnage>
+	<Personnage nom="Shanks" pointAttaque="5" pointVie="10"></Personnage>
+	<Personnage nom="Kurapika" pointAttaque="3" pointVie="7"></Personnage>
+	<Personnage nom="Sendo" pointAttaque="4" pointVie="9"></Personnage>
+	<Personnage nom="Goku" pointAttaque="5" pointVie="10"></Personnage>
+	<Personnage nom="Takamura" pointAttaque="5" pointVie="10"></Personnage>
+	<Personnage nom="Vegeta" pointAttaque="4" pointVie="9"></Personnage>
+	<Personnage nom="Saitama" pointAttaque="10" pointVie="10"></Personnage>
+	<Personnage nom="Gohan" pointAttaque="3" pointVie="7"></Personnage>
+	<Personnage nom="Jin" pointAttaque="5" pointVie="10"></Personnage>
+	<Personnage nom="Black Star" pointAttaque="4" pointVie="8"></Personnage>
+	<Personnage nom="Ace" pointAttaque="2" pointVie="6"></Personnage>
+	<Personnage nom="Ussop" pointAttaque="1" pointVie="5"></Personnage>
+	<Personnage nom="Ippo" pointAttaque="3" pointVie="7"></Personnage>
+	<Personnage nom="Sasuke" pointAttaque="2" pointVie="6"></Personnage>
+	<Personnage nom="Levi" pointAttaque="4" pointVie="8"></Personnage>
+</Personnages>

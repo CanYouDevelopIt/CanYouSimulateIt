@@ -8,4 +8,8 @@ public interface Images {
 	public static final String mur = "resources/pirate/images/mur.png";
 	public static final String pirate = "resources/pirate/images/pirate.png";
 	public static final String pirateAlgue = "resources/pirate/images/pirateAlgue.png";
+	public static final String shonen = "resources/shonenfight/images/shonen.png";
+	public static final String shonenMur = "resources/shonenfight/images/mur.png";
+	public static final String shonenFlamme = "resources/shonenfight/images/flamme.png";
+	public static final String shonenSol = "resources/shonenfight/images/sol.png";
 }

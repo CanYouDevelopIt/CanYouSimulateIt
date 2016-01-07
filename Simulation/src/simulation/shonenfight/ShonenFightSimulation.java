@@ -8,6 +8,7 @@ import simulation.Personnage;
 import simulation.common.tools.XmlReader;
 import simulation.etat.EtatInactif;
 import simulation.factory.Simulation;
+import simulation.view.MainApplicationView;
 
 public class ShonenFightSimulation implements Simulation {
 
@@ -15,17 +16,21 @@ public class ShonenFightSimulation implements Simulation {
 	private List<Personnage> listePersonnages;
 	private EquipeCombattant equipeA;
 	private EquipeCombattant equipeB;
-
+	private MainApplicationView mav;
+	private ShonenFightMap sfm;
+	
 	@Override
 	public void launchSimulation() {
 
 		File filePersonnages = new File(fichierPersonnages);
 		listePersonnages = XmlReader.getPersonnages(filePersonnages);
 
-		créerEquipes();
+		//créerEquipes();
 
-		lancerCombat();
-
+		//lancerCombat();
+		
+		mav.addSimulation(sfm);
+		
 	}
 
 	public void créerEquipes() {
@@ -103,6 +108,13 @@ public class ShonenFightSimulation implements Simulation {
 			equipeDefenseur.aPerduCombattant();
 		}
 
+	}
+
+	public void prepareSimulation(MainApplicationView mainApplicationView) {
+		
+		mav = mainApplicationView;
+		sfm = new ShonenFightMap(mav);
+		
 	}
 
 }

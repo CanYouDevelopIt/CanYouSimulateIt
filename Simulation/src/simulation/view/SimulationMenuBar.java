@@ -56,10 +56,8 @@ public class SimulationMenuBar extends JMenuBar implements MouseListener {
 		if (e.getSource().equals(shonenFightSimulation)) {
 			// modifie la fenetre principale avec la simulation de shonen Fight
 			System.out.println("Shonen Fight");
-			JPanel shonenFight = new JPanel();
-			shonenFight.setBackground(Color.gray);
-			mainApplicationView.addSimulation(shonenFight);
 			ShonenFightSimulation sh = new ShonenFightSimulation();
+			sh.prepareSimulation(mainApplicationView);
 			sh.launchSimulation();
 		}
 

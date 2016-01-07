@@ -21,6 +21,13 @@ public class ImageFactory {
 			return new JLabel(new ImageIcon(Images.tresor));
 		} else if (imageId.equals("G")) {
 			return new JLabel(new ImageIcon(Images.algue));
+		} else if (imageId.equals("F")) {
+			return new JLabel(new ImageIcon(Images.shonenFlamme));
+		} else if (imageId.equals("X")) {
+			System.out.println("X");
+			return new JLabel(new ImageIcon(Images.shonen));
+		} else if (imageId.equals("Y")) {
+			return new JLabel(new ImageIcon(Images.shonen));
 		} else if (imageId.equals("S")) {
 			if (imageIdOrigine.equals("G")) {
 				return new JLabel(new ImageIcon(Images.pirateAlgue));

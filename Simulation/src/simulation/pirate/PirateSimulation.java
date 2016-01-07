@@ -14,7 +14,7 @@ public class PirateSimulation implements Simulation {
 
 	@Override
 	public void launchSimulation() {
-		mav.add(pm);
+		mav.addSimulation(pm);
 	}
 
 }

@@ -8,7 +8,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
-import simulation.pirate.PirateMap;
+import simulation.pirate.PirateSimulation;
 import simulation.shonenfight.ShonenFightSimulation;
 
 public class SimulationMenuBar extends JMenuBar implements MouseListener {
@@ -48,7 +48,9 @@ public class SimulationMenuBar extends JMenuBar implements MouseListener {
 		if (e.getSource().equals(pirateSimulation)) {
 			// modifie la fenetre principale avec la simulation de pirate
 			System.out.println("Pirate");
-			mainApplicationView.addSimulation(new PirateMap(mainApplicationView));
+			PirateSimulation ps = new PirateSimulation();
+			ps.prepareSimulation(mainApplicationView);
+			ps.launchSimulation();
 		}
 
 		if (e.getSource().equals(shonenFightSimulation)) {

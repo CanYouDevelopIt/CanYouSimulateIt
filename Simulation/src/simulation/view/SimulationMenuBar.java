@@ -6,6 +6,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
+import simulation.RunningSimulation;
 import simulation.ant.AntSimulation;
 import simulation.pirate.PirateSimulation;
 import simulation.shonenfight.ShonenFightSimulation;
@@ -47,25 +48,41 @@ public class SimulationMenuBar extends JMenuBar implements MouseListener {
 		if (e.getSource().equals(pirateSimulation)) {
 			// modifie la fenetre principale avec la simulation de pirate
 			System.out.println("Pirate");
-			PirateSimulation ps = new PirateSimulation();
-			ps.prepareSimulation(mainApplicationView);
-			ps.showSimulation();
+			// Check si une simulation est entrain de tourner avant d'afficher
+			// la simulation
+			if (RunningSimulation.getInstance() == null) {
+				PirateSimulation ps = new PirateSimulation();
+				ps.prepareSimulation(mainApplicationView);
+				ps.showSimulation();
+			} else {
+				System.out.println("Une simulation est en cours.");
+			}
 		}
 
 		if (e.getSource().equals(shonenFightSimulation)) {
-			// modifie la fenetre principale avec la simulation de shonen Fight
 			System.out.println("Shonen Fight");
-			ShonenFightSimulation sh = new ShonenFightSimulation();
-			sh.prepareSimulation(mainApplicationView);
-			sh.showSimulation();
+
+			if (RunningSimulation.getInstance() == null) {
+
+				ShonenFightSimulation sh = new ShonenFightSimulation();
+				sh.prepareSimulation(mainApplicationView);
+				sh.showSimulation();
+			} else {
+				System.out.println("Une simulation est en cours.");
+			}
 		}
 
 		if (e.getSource().equals(antSimulation)) {
-			// modifie la fenetre principale avec la simulation des fourmis
 			System.out.println("Ant Simulation");
-			AntSimulation as = new AntSimulation();
-			as.prepareSimulation(mainApplicationView);
-			as.showSimulation();
+
+			if (RunningSimulation.getInstance() == null) {
+
+				AntSimulation as = new AntSimulation();
+				as.prepareSimulation(mainApplicationView);
+				as.showSimulation();
+			} else {
+				System.out.println("Une simulation est en cours.");
+			}
 		}
 	}
 

@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import simulation.Personnage;
+import simulation.RunningSimulation;
 import simulation.common.graph.Dijkstra;
 import simulation.common.graph.Edge;
 import simulation.common.graph.Graph;
@@ -257,6 +258,10 @@ public class PirateMap extends JPanel implements ActionListener {
 
 	public void deplacerPirate() {
 
+		// Démarrage de la simulation
+		RunningSimulation.startSimulation();
+		// -- -- -- -- -- -- -- -- -- -- --
+
 		List<Personnage> listePersonnage = new ArrayList<Personnage>();
 
 		for (int i = 0; i < listNbPirateSorti.size(); i++) {
@@ -361,6 +366,9 @@ public class PirateMap extends JPanel implements ActionListener {
 		buttonLancer.setEnabled(isNotDisabled);
 		buttonLoadFile.setEnabled(isNotDisabled);
 
+		// Arret de la simulation
+		RunningSimulation.stopSimulation();
+		// -- -- -- -- -- -- -- -- -- -- --
 	}
 
 	@Override

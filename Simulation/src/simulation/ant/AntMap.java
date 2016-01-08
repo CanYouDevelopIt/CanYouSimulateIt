@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import simulation.Personnage;
+import simulation.RunningSimulation;
 import simulation.ant.model.Ant;
 import simulation.common.graph.Dijkstra;
 import simulation.common.graph.Edge;
@@ -54,7 +55,7 @@ public class AntMap extends JPanel implements ActionListener {
 	private JButton buttonLoadFile;
 
 	private JTextField nbAntSorti = new JTextField("10");
-	
+
 	private List<Integer> listNbAntSorti = new ArrayList<Integer>();
 	private List<Node> listNodeDepart = new ArrayList<Node>();
 	private List<Node> listPommes = new ArrayList<Node>();
@@ -162,7 +163,7 @@ public class AntMap extends JPanel implements ActionListener {
 		JLabel labelPorte = new JLabel("Nombre de fourmis: ");
 		jpSud.add(labelPorte);
 		jpSud.add(nbAntSorti);
-			
+
 		jpSud.add(buttonLancer);
 	}
 
@@ -256,6 +257,10 @@ public class AntMap extends JPanel implements ActionListener {
 	}
 
 	public void deplacerAnt() {
+
+		// Démarrage de la simulation
+		RunningSimulation.startSimulation();
+		// -- -- -- -- -- -- -- -- -- -- --
 
 		List<Personnage> listePersonnage = new ArrayList<Personnage>();
 
@@ -360,6 +365,9 @@ public class AntMap extends JPanel implements ActionListener {
 		buttonLancer.setEnabled(isNotDisabled);
 		buttonLoadFile.setEnabled(isNotDisabled);
 
+		// Arret de la simulation
+		RunningSimulation.stopSimulation();
+		// -- -- -- -- -- -- -- -- -- -- --
 	}
 
 	@Override

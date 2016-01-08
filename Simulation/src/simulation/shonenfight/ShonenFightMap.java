@@ -115,8 +115,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				if (node == null) {
 					jpNord.add(imageFactory.getImageLabel(null, null));
 				} else {
-					jpNord.add(imageFactory.getImageLabel(node.getId(),
-							node.getIdOrigine()));
+					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine()));
 				}
 			}
 		}
@@ -143,9 +142,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				nbcol = tab.length - 1;
 			}
 		} catch (Exception e) {
-			System.out
-					.println("Erreur lors de l'initialisation de la taille du map: "
-							+ e.getMessage());
+			System.out.println("Erreur lors de l'initialisation de la taille du map: " + e.getMessage());
 		} finally {
 			ClosingTools.closeQuietly(br);
 		}
@@ -161,11 +158,11 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 			while ((ligne2 = br.readLine()) != null) {
 				String[] tab2 = ligne2.split("");
 				for (int i = 1; i < tab2.length; i++) {
-					if (tab2[i].equals(" ") || tab2[i].equals("F")
-							|| tab2[i].equals("X") || tab2[i].equals("Y")
+					if (tab2[i].equals(" ") || tab2[i].equals("F") || tab2[i].equals("X") || tab2[i].equals("Y")
 							|| tab2[i].equals("C")) {
-						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1,
-								cptligne);
+						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1, cptligne);
+						graph.registerNode(nodes[cptligne][i - 1]);
+						nodes[cptligne][i - 1].setMinDistance(1);
 					}
 				}
 				cptligne++;
@@ -207,8 +204,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		}
 
 		setSize(nbcol * 26, nbligne * 26 + 80);
-		mainApplicationView.setPreferredSize(new Dimension(getWidth(),
-				getHeight() + 20));
+		mainApplicationView.setPreferredSize(new Dimension(getWidth(), getHeight() + 20));
 
 		actualiserMap();
 	}

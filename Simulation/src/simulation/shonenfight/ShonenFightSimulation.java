@@ -20,7 +20,7 @@ public class ShonenFightSimulation implements Simulation {
 	private ShonenFightMap sfm;
 	
 	@Override
-	public void launchSimulation() {
+	public void showSimulation() {
 
 		File filePersonnages = new File(fichierPersonnages);
 		listePersonnages = XmlReader.getPersonnages(filePersonnages);
@@ -29,7 +29,7 @@ public class ShonenFightSimulation implements Simulation {
 
 		//lancerCombat();
 		
-		mav.addSimulation(sfm);
+		mav.addSimulationToView(sfm);
 		
 	}
 

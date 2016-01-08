@@ -50,7 +50,7 @@ public class SimulationMenuBar extends JMenuBar implements MouseListener {
 			System.out.println("Pirate");
 			PirateSimulation ps = new PirateSimulation();
 			ps.prepareSimulation(mainApplicationView);
-			ps.launchSimulation();
+			ps.showSimulation();
 		}
 
 		if (e.getSource().equals(shonenFightSimulation)) {
@@ -58,7 +58,7 @@ public class SimulationMenuBar extends JMenuBar implements MouseListener {
 			System.out.println("Shonen Fight");
 			ShonenFightSimulation sh = new ShonenFightSimulation();
 			sh.prepareSimulation(mainApplicationView);
-			sh.launchSimulation();
+			sh.showSimulation();
 		}
 
 		if (e.getSource().equals(antSimulation)) {
@@ -66,7 +66,7 @@ public class SimulationMenuBar extends JMenuBar implements MouseListener {
 			System.out.println("Ant Simulation");
 			JPanel ant = new JPanel();
 			ant.setBackground(Color.darkGray);
-			mainApplicationView.addSimulation(ant);
+			mainApplicationView.addSimulationToView(ant);
 		}
 	}
 

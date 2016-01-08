@@ -32,8 +32,9 @@ public class MainApplicationView extends JFrame {
 		setJMenuBar(new SimulationMenuBar(this));
 	}
 
-	public void addSimulation(JPanel simulationPanel) {
+	public void addSimulationToView(JPanel simulationPanel) {
 		Container c = getContentPane();
+		c.removeAll();
 		c.add(simulationPanel, BorderLayout.CENTER);
 		revalidate();
 		pack();

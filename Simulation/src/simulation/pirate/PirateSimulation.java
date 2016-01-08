@@ -13,8 +13,8 @@ public class PirateSimulation implements Simulation {
 	}
 
 	@Override
-	public void launchSimulation() {
-		mav.addSimulation(pm);
+	public void showSimulation() {
+		mav.addSimulationToView(pm);
 	}
 
 }

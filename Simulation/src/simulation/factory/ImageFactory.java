@@ -24,7 +24,6 @@ public class ImageFactory {
 		} else if (imageId.equals("F")) {
 			return new JLabel(new ImageIcon(Images.shonenFlamme));
 		} else if (imageId.equals("X")) {
-			System.out.println("X");
 			return new JLabel(new ImageIcon(Images.shonen));
 		} else if (imageId.equals("Y")) {
 			return new JLabel(new ImageIcon(Images.shonen));

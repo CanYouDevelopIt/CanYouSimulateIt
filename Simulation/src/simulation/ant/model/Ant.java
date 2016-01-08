@@ -20,6 +20,10 @@ public class Ant extends Personnage {
 		pommes = tousLesPommes;
 		nodesDejaPasses = new ArrayList<Node>();
 	}
+	
+	public Ant(int id_) {
+		super("ant "+id_);
+	}
 		
 	public int getId() {
 		return id;

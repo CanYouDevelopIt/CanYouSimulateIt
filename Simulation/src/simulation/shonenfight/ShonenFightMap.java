@@ -13,17 +13,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
-import simulation.common.graph.Edge;
+import simulation.Personnage;
 import simulation.common.graph.Graph;
 import simulation.common.graph.Node;
 import simulation.common.tools.ClosingTools;
 import simulation.common.tools.XmlReader;
+import simulation.etat.EtatInactif;
 import simulation.factory.ImageFactory;
 import simulation.view.MainApplicationView;
 
@@ -32,6 +33,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	private static final Color BG_COLOR = new Color(98, 165, 199);
 
 	private static final long serialVersionUID = 446565083035345353L;
+
+	private static final String map = "resources/shonenfight/map/piratemap.xml";
+	private static final String fichierPersonnages = "resources/shonenfight/listePersonnages.xml";
 
 	MainApplicationView mainApplicationView;
 
@@ -44,30 +48,24 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	private JPanel jpNord;
 	private JPanel jpSud;
 	private JButton buttonLancer;
-	private JButton buttonLoadFile;
 
-	private int vitesseDeplacement = 100;
 	private boolean isNotDisabled = true;
+
+	private List<Personnage> listePersonnages;
+	private EquipeCombattant equipeA;
+	private EquipeCombattant equipeB;
 
 	public ShonenFightMap(MainApplicationView mainAppView) {
 		mainApplicationView = mainAppView;
-		buildMap();
+
+		buildPanel(); // Creation Panel
+		loadPersonnages(); // Chargement de tous les personnages
+		creerEquipes();
+
+		initMap();
 	}
 
-	public void loadFichier(String f) throws IOException {
-		fichier = new File(f);
-		graph = new Graph();
-
-		if (fichier.exists()) {
-			initTailleMap();
-			initParcellesMap();
-			initDistanceEntreParcelle();
-
-		}
-	}
-
-	public void buildMap() {
-
+	public void buildPanel() {
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Dimension d = tk.getScreenSize();
 		if (nbligne == 0 & nbcol == 0) {
@@ -88,6 +86,94 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		setBackground(BG_COLOR);
 	}
 
+	public void initJpNordComponents() {
+		jpNord.setBackground(BG_COLOR);
+		GridLayout g = new GridLayout(nbligne, nbcol);
+		jpNord.setLayout(g);
+		ImageFactory imageFactory = new ImageFactory();
+		for (int i = 0; i < nbligne; i++) {
+			for (int j = 0; j < nbcol; j++) {
+				Node node = graph.getNode(j, i);
+				if (node == null) {
+					jpNord.add(imageFactory.getImageLabel(null, null));
+				} else {
+					jpNord.add(imageFactory.getImageLabel(node.getId(),
+							node.getIdOrigine()));
+				}
+			}
+		}
+	}
+
+	public void initJpSudComponents() {
+		jpSud.setBackground(BG_COLOR);
+		buttonLancer = new JButton("Fight!");
+		buttonLancer.addActionListener(this);
+
+		jpSud.add(buttonLancer);
+	}
+
+	private void loadPersonnages() {
+		File filePersonnages = new File(fichierPersonnages);
+		listePersonnages = XmlReader.getPersonnages(filePersonnages);
+	}
+
+	public void creerEquipes() {
+
+		Random rand = new Random();
+
+		equipeA = new EquipeCombattant();
+		equipeB = new EquipeCombattant();
+
+		while (equipeA.getSize() < 5) {
+			int chiffreAlea = rand.nextInt(listePersonnages.size() - 1);
+			Combattant p = (Combattant) listePersonnages.get(chiffreAlea);
+
+			if (!equipeA.contientCombattant(p)) {
+				equipeA.ajouterCombattant(p);
+				System.out.print(p.getNomPersonnage() + "|");
+			}
+		}
+		System.out.println("");
+		System.out.println("VS");
+		while (equipeB.getSize() < 5) {
+			int chiffreAlea = rand.nextInt(listePersonnages.size() - 1);
+			Combattant p = (Combattant) listePersonnages.get(chiffreAlea);
+
+			if (!equipeB.contientCombattant(p)
+					&& !equipeA.contientCombattant(p)) {
+				equipeB.ajouterCombattant(p);
+				System.out.print(p.getNomPersonnage() + "|");
+			}
+		}
+
+		System.out.println("");
+	}
+
+	private void initMap() {
+
+		try {
+			loadFichier();
+		} catch (IOException e) {
+		}
+
+		setSize(nbcol * 26, nbligne * 26 + 80);
+		mainApplicationView.setPreferredSize(new Dimension(getWidth(),
+				getHeight() + 20));
+
+		actualiserMap();
+	}
+
+	public void loadFichier() throws IOException {
+		fichier = new File(map);
+
+		graph = new Graph();
+
+		if (fichier.exists()) {
+			initTailleMap();
+			initParcellesMap();
+		}
+	}
+
 	public void actualiserMap() {
 
 		removeAll();
@@ -103,37 +189,8 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		setBackground(BG_COLOR);
 
 		buttonLancer.setEnabled(isNotDisabled);
-		buttonLoadFile.setEnabled(isNotDisabled);
 
 		mainApplicationView.pack();
-	}
-
-	public void initJpNordComponents() {
-		jpNord.setBackground(BG_COLOR);
-		GridLayout g = new GridLayout(nbligne, nbcol);
-		jpNord.setLayout(g);
-		ImageFactory imageFactory = new ImageFactory();
-		for (int i = 0; i < nbligne; i++) {
-			for (int j = 0; j < nbcol; j++) {
-				Node node = graph.getNode(j, i);
-				if (node == null) {
-					jpNord.add(imageFactory.getImageLabel(null, null));
-				} else {
-					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine()));
-				}
-			}
-		}
-	}
-
-	public void initJpSudComponents() {
-		jpSud.setBackground(BG_COLOR);
-		buttonLancer = new JButton("Lancer");
-		buttonLoadFile = new JButton("Load File");
-		buttonLancer.addActionListener(this);
-		buttonLoadFile.addActionListener(this);
-
-		jpSud.add(buttonLoadFile);
-		jpSud.add(buttonLancer);
 	}
 
 	private void initTailleMap() {
@@ -149,7 +206,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				nbcol = tab.length - 1;
 			}
 		} catch (Exception e) {
-			System.out.println("Erreur lors de l'initialisation de la taille du map: " + e.getMessage());
+			System.out
+					.println("Erreur lors de l'initialisation de la taille du map: "
+							+ e.getMessage());
 		} finally {
 			ClosingTools.closeQuietly(br);
 		}
@@ -165,9 +224,13 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 			while ((ligne2 = br.readLine()) != null) {
 				String[] tab2 = ligne2.split("");
 				for (int i = 1; i < tab2.length; i++) {
-					if (tab2[i].equals(" ") || tab2[i].equals("D") || tab2[i].equals("A") || tab2[i].equals("G")
-							|| tab2[i].equals("X") || tab2[i].equals("Y") || tab2[i].equals("S")) {
-						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1, cptligne);
+					if (tab2[i].equals(" ") || tab2[i].equals("F")
+							|| tab2[i].equals("X") || tab2[i].equals("Y")
+							|| tab2[i].equals("C")) {
+						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1,
+								cptligne);
+						graph.registerNode(nodes[cptligne][i - 1]);
+						nodes[cptligne][i - 1].setMinDistance(1);
 					}
 				}
 				cptligne++;
@@ -187,34 +250,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		return br;
 	}
 
-	private void initDistanceEntreParcelle() {
-		for (int i = 0; i < nodes.length; i++) {
-			for (int j = 0; j < nodes[i].length; j++) {
-				if (nodes[i][j] != null) {
-					graph.registerNode(nodes[i][j]);
-
-					if (nodes[i][j].getId().equals("G")) {
-						if (nodes[i][j + 1] != null) {
-							new Edge(nodes[i][j], nodes[i][j + 1], 2);
-						}
-						if (nodes[i + 1][j] != null) {
-							new Edge(nodes[i][j], nodes[i + 1][j], 2);
-						}
-					} else {
-						nodes[i][j].setMinDistance(1);
-						if (nodes[i][j + 1] != null) {
-							new Edge(nodes[i][j], nodes[i][j + 1], 1);
-						}
-						if (nodes[i + 1][j] != null) {
-							new Edge(nodes[i][j], nodes[i + 1][j], 1);
-						}
-					}
-
-				}
-			}
-		}
-	}
-
 	public void repaintFrame() {
 		this.validate();
 		this.repaint();
@@ -225,35 +260,61 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		if (e.getSource().equals(buttonLancer)) {
 			isNotDisabled = false;
 			buttonLancer.setEnabled(isNotDisabled);
-			buttonLoadFile.setEnabled(isNotDisabled);
-
-		}
-
-		if (e.getSource().equals(buttonLoadFile)) {
-			initMap();
+			new Thread(new Runnable() {
+				public void run() {
+					lancerCombat();
+				}
+			}).start();
 		}
 	}
 
-	private void initMap() {
+	public void lancerCombat() {
 
-		vitesseDeplacement = 100;
+		System.out.println("FIGHT !!!");
+		System.out.println("-----------------------");
 
-		JFileChooser fc = new JFileChooser();
-		fc.setCurrentDirectory(new File("resources/"));
-		fc.setDialogTitle("Choisir fichier de Simulation");
-		fc.setFileFilter(new FileNameExtensionFilter("XML", "xml"));
-		if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+		while (equipeA.getNbCombattantVivant() > 0
+				&& equipeB.getNbCombattantVivant() > 0) {
+			lancerAttaque(equipeA, equipeB);
 
-			try {
-				loadFichier(fc.getSelectedFile().getAbsolutePath());
-			} catch (IOException e) {
+			if (equipeB.getNbCombattantVivant() > 0) {
+				lancerAttaque(equipeB, equipeA);
 			}
 
-			setSize(nbcol * 26, nbligne * 26 + 80);
-			mainApplicationView.setPreferredSize(new Dimension(getWidth(), getHeight() + 20));
-
-			actualiserMap();
+			System.out.println("Fin de round");
+			System.out.println("----------A------------");
+			for (int i = 0; i < equipeA.getSize(); i++) {
+				equipeA.getCombattant(i).afficherHP();
+				;
+			}
+			System.out.println("----------B------------");
+			for (int i = 0; i < equipeB.getSize(); i++) {
+				equipeB.getCombattant(i).afficherHP();
+				;
+			}
+			System.out.println("-----------------------");
 		}
+
+		if (equipeA.getNbCombattantVivant() > 0) {
+			System.out.println("L'équipe A a gagné.");
+		} else {
+			System.out.println("L'équipe B a gagné.");
+		}
+
+	}
+
+	public void lancerAttaque(EquipeCombattant equipeAttaquant,
+			EquipeCombattant equipeDefenseur) {
+
+		Combattant attaquant = equipeAttaquant.getProchainCombattant();
+		Combattant defenseur = equipeDefenseur.getCombattantFaible();
+
+		attaquant.AttaqueCombattant(defenseur);
+		if (defenseur.getEtatPersonnage().getClass().getSimpleName()
+				.equals(EtatInactif.class.getSimpleName())) {
+			equipeDefenseur.aPerduCombattant();
+		}
+
 	}
 
 }

@@ -15,11 +15,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
-import simulation.common.graph.Edge;
 import simulation.common.graph.Graph;
 import simulation.common.graph.Node;
 import simulation.common.tools.ClosingTools;
@@ -33,6 +30,8 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 446565083035345353L;
 
+	private static final String map = "resources/shonenfight/map/piratemap.xml";
+
 	MainApplicationView mainApplicationView;
 
 	private File fichier;
@@ -44,29 +43,27 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	private JPanel jpNord;
 	private JPanel jpSud;
 	private JButton buttonLancer;
-	private JButton buttonLoadFile;
 
-	private int vitesseDeplacement = 100;
 	private boolean isNotDisabled = true;
 
 	public ShonenFightMap(MainApplicationView mainAppView) {
 		mainApplicationView = mainAppView;
-		buildMap();
+		buildPanel();
+		initMap();
 	}
 
-	public void loadFichier(String f) throws IOException {
-		fichier = new File(f);
+	public void loadFichier() throws IOException {
+		fichier = new File(map);
+
 		graph = new Graph();
 
 		if (fichier.exists()) {
 			initTailleMap();
 			initParcellesMap();
-			initDistanceEntreParcelle();
-
 		}
 	}
 
-	public void buildMap() {
+	public void buildPanel() {
 
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		Dimension d = tk.getScreenSize();
@@ -103,7 +100,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		setBackground(BG_COLOR);
 
 		buttonLancer.setEnabled(isNotDisabled);
-		buttonLoadFile.setEnabled(isNotDisabled);
 
 		mainApplicationView.pack();
 	}
@@ -119,7 +115,8 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				if (node == null) {
 					jpNord.add(imageFactory.getImageLabel(null, null));
 				} else {
-					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine()));
+					jpNord.add(imageFactory.getImageLabel(node.getId(),
+							node.getIdOrigine()));
 				}
 			}
 		}
@@ -127,12 +124,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 	public void initJpSudComponents() {
 		jpSud.setBackground(BG_COLOR);
-		buttonLancer = new JButton("Lancer");
-		buttonLoadFile = new JButton("Load File");
+		buttonLancer = new JButton("Fight!");
 		buttonLancer.addActionListener(this);
-		buttonLoadFile.addActionListener(this);
 
-		jpSud.add(buttonLoadFile);
 		jpSud.add(buttonLancer);
 	}
 
@@ -149,7 +143,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				nbcol = tab.length - 1;
 			}
 		} catch (Exception e) {
-			System.out.println("Erreur lors de l'initialisation de la taille du map: " + e.getMessage());
+			System.out
+					.println("Erreur lors de l'initialisation de la taille du map: "
+							+ e.getMessage());
 		} finally {
 			ClosingTools.closeQuietly(br);
 		}
@@ -165,9 +161,11 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 			while ((ligne2 = br.readLine()) != null) {
 				String[] tab2 = ligne2.split("");
 				for (int i = 1; i < tab2.length; i++) {
-					if (tab2[i].equals(" ") || tab2[i].equals("D") || tab2[i].equals("A") || tab2[i].equals("G")
-							|| tab2[i].equals("X") || tab2[i].equals("Y") || tab2[i].equals("S")) {
-						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1, cptligne);
+					if (tab2[i].equals(" ") || tab2[i].equals("F")
+							|| tab2[i].equals("X") || tab2[i].equals("Y")
+							|| tab2[i].equals("C")) {
+						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1,
+								cptligne);
 					}
 				}
 				cptligne++;
@@ -187,34 +185,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		return br;
 	}
 
-	private void initDistanceEntreParcelle() {
-		for (int i = 0; i < nodes.length; i++) {
-			for (int j = 0; j < nodes[i].length; j++) {
-				if (nodes[i][j] != null) {
-					graph.registerNode(nodes[i][j]);
-
-					if (nodes[i][j].getId().equals("G")) {
-						if (nodes[i][j + 1] != null) {
-							new Edge(nodes[i][j], nodes[i][j + 1], 2);
-						}
-						if (nodes[i + 1][j] != null) {
-							new Edge(nodes[i][j], nodes[i + 1][j], 2);
-						}
-					} else {
-						nodes[i][j].setMinDistance(1);
-						if (nodes[i][j + 1] != null) {
-							new Edge(nodes[i][j], nodes[i][j + 1], 1);
-						}
-						if (nodes[i + 1][j] != null) {
-							new Edge(nodes[i][j], nodes[i + 1][j], 1);
-						}
-					}
-
-				}
-			}
-		}
-	}
-
 	public void repaintFrame() {
 		this.validate();
 		this.repaint();
@@ -225,35 +195,22 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		if (e.getSource().equals(buttonLancer)) {
 			isNotDisabled = false;
 			buttonLancer.setEnabled(isNotDisabled);
-			buttonLoadFile.setEnabled(isNotDisabled);
 
-		}
-
-		if (e.getSource().equals(buttonLoadFile)) {
-			initMap();
 		}
 	}
 
 	private void initMap() {
 
-		vitesseDeplacement = 100;
-
-		JFileChooser fc = new JFileChooser();
-		fc.setCurrentDirectory(new File("resources/"));
-		fc.setDialogTitle("Choisir fichier de Simulation");
-		fc.setFileFilter(new FileNameExtensionFilter("XML", "xml"));
-		if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-
-			try {
-				loadFichier(fc.getSelectedFile().getAbsolutePath());
-			} catch (IOException e) {
-			}
-
-			setSize(nbcol * 26, nbligne * 26 + 80);
-			mainApplicationView.setPreferredSize(new Dimension(getWidth(), getHeight() + 20));
-
-			actualiserMap();
+		try {
+			loadFichier();
+		} catch (IOException e) {
 		}
+
+		setSize(nbcol * 26, nbligne * 26 + 80);
+		mainApplicationView.setPreferredSize(new Dimension(getWidth(),
+				getHeight() + 20));
+
+		actualiserMap();
 	}
 
 }

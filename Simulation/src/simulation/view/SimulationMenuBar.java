@@ -1,13 +1,12 @@
 package simulation.view;
 
-import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JPanel;
 
+import simulation.ant.AntSimulation;
 import simulation.pirate.PirateSimulation;
 import simulation.shonenfight.ShonenFightSimulation;
 
@@ -64,9 +63,9 @@ public class SimulationMenuBar extends JMenuBar implements MouseListener {
 		if (e.getSource().equals(antSimulation)) {
 			// modifie la fenetre principale avec la simulation des fourmis
 			System.out.println("Ant Simulation");
-			JPanel ant = new JPanel();
-			ant.setBackground(Color.darkGray);
-			mainApplicationView.addSimulationToView(ant);
+			AntSimulation as = new AntSimulation();
+			as.prepareSimulation(mainApplicationView);
+			as.showSimulation();
 		}
 	}
 

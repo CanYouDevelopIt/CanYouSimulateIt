@@ -27,8 +27,8 @@ import simulation.common.tools.XmlReader;
 import simulation.factory.ImageFactory;
 import simulation.view.MainApplicationView;
 
-public class ShonenFightMap extends JPanel implements ActionListener{
-	
+public class ShonenFightMap extends JPanel implements ActionListener {
+
 	private static final Color BG_COLOR = new Color(98, 165, 199);
 
 	private static final long serialVersionUID = 446565083035345353L;
@@ -165,7 +165,8 @@ public class ShonenFightMap extends JPanel implements ActionListener{
 			while ((ligne2 = br.readLine()) != null) {
 				String[] tab2 = ligne2.split("");
 				for (int i = 1; i < tab2.length; i++) {
-					if (tab2[i].equals(" ") || tab2[i].equals("D") || tab2[i].equals("A") || tab2[i].equals("G")) {
+					if (tab2[i].equals(" ") || tab2[i].equals("D") || tab2[i].equals("A") || tab2[i].equals("G")
+							|| tab2[i].equals("X") || tab2[i].equals("Y") || tab2[i].equals("S")) {
 						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1, cptligne);
 					}
 				}
@@ -254,5 +255,5 @@ public class ShonenFightMap extends JPanel implements ActionListener{
 			actualiserMap();
 		}
 	}
-	
+
 }

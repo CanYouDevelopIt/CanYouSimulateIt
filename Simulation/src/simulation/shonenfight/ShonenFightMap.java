@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -16,8 +15,11 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import simulation.Personnage;
 import simulation.common.graph.Graph;
@@ -49,6 +51,12 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	private JPanel jpSud;
 	private JButton buttonLancer;
 
+	private DefaultListModel<String> informationsCombat = new DefaultListModel<String>();
+	private JList<String> jInformationsCombat = new JList<String>(
+			informationsCombat);
+	private JScrollPane scrollInformationsCombat = new JScrollPane(
+			jInformationsCombat);
+
 	private boolean isNotDisabled = true;
 
 	private List<Personnage> listePersonnages;
@@ -66,13 +74,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	}
 
 	public void buildPanel() {
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		Dimension d = tk.getScreenSize();
-		if (nbligne == 0 & nbcol == 0) {
-			setSize(d.width / 2, d.height / 2);
-		} else {
-			setSize(nbcol * 26, nbligne * 26 + 80);
-		}
 
 		jpNord = new JPanel();
 		jpNord.setBackground(BG_COLOR);
@@ -105,11 +106,14 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	}
 
 	public void initJpSudComponents() {
+
 		jpSud.setBackground(BG_COLOR);
+
 		buttonLancer = new JButton("Fight!");
 		buttonLancer.addActionListener(this);
 
-		jpSud.add(buttonLancer);
+		jpSud.add(buttonLancer, BorderLayout.EAST);
+		jpSud.add(scrollInformationsCombat, BorderLayout.WEST);
 	}
 
 	private void loadPersonnages() {
@@ -282,6 +286,8 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 			}
 
 			System.out.println("Fin de round");
+			informationsCombat.addElement("Fin de round");
+
 			System.out.println("----------A------------");
 			for (int i = 0; i < equipeA.getSize(); i++) {
 				equipeA.getCombattant(i).afficherHP();
@@ -296,8 +302,10 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		}
 
 		if (equipeA.getNbCombattantVivant() > 0) {
+			informationsCombat.addElement("L'équipe A a gagné.");
 			System.out.println("L'équipe A a gagné.");
 		} else {
+			informationsCombat.addElement("L'équipe B a gagné.");
 			System.out.println("L'équipe B a gagné.");
 		}
 

@@ -294,16 +294,16 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 	public void lancerCombat() {
 
-		System.out.println("POSITION");
-		for (Combattant c : equipeA.getEquipe()) {
-			System.out.println("Position de " + c.getNomPersonnage() + " : "
-					+ c.getPosition().toString());
-		}
-
-		for (Combattant c : equipeB.getEquipe()) {
-			System.out.println("Position de " + c.getNomPersonnage() + " : "
-					+ c.getPosition().toString());
-		}
+		// System.out.println("POSITION");
+		// for (Combattant c : equipeA.getEquipe()) {
+		// System.out.println("Position de " + c.getNomPersonnage() + " : "
+		// + c.getPosition().toString());
+		// }
+		//
+		// for (Combattant c : equipeB.getEquipe()) {
+		// System.out.println("Position de " + c.getNomPersonnage() + " : "
+		// + c.getPosition().toString());
+		// }
 
 		System.out.println("-----------------------");
 
@@ -371,15 +371,22 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		Node nodeDepart = graph.getNode(attaquant.getPosition().getX(),
 				attaquant.getPosition().getY());
 
-		Node nodeArriver = graph.getNode(defenseur.getPosition().getX(),
-				defenseur.getPosition().getY());
+		System.out.println(attaquant.getNomPersonnage() + " : "
+				+ attaquant.getPosition().toString());
+
+		System.out.println(defenseur.getNomPersonnage() + " : "
+				+ defenseur.getPosition().toString());
 
 		while (!defenseurAttaque) {
+			System.out.println("while");
 
-			Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver, null);
+			Dijkstra d = new Dijkstra(graph, attaquant.getPosition(),
+					defenseur.getPosition(), null);
 
-			List<Node> nouveauCheminCourt = d.cheminPlusCourtOptimiser();
-			int nouveauCheminCourtDistance = nouveauCheminCourt.size();
+			cheminPlusCourt = d.cheminPlusCourtOptimiser();
+
+			System.out.println("cheminPlusCourt.size() = "
+					+ cheminPlusCourt.size());
 
 			if (cheminPlusCourt.size() > 1) {
 

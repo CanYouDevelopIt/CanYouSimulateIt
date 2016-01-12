@@ -52,7 +52,7 @@ public class AntMap extends JPanel implements ActionListener {
 	private JButton buttonLancer;
 	private JButton buttonLoadFile;
 
-	private JTextField nbAntSorti = new JTextField("10");
+	private JTextField nbAntSorti = new JTextField();
 
 	private List<Integer> listNbAntSorti = new ArrayList<Integer>();
 	private List<Node> listNodeDepart = new ArrayList<Node>();
@@ -79,7 +79,7 @@ public class AntMap extends JPanel implements ActionListener {
 			initTailleMap();
 			initParcellesMap();
 			initDistanceEntreParcelle();
-
+			nbAntSorti.setText(Integer.toString(listPommes.size()));
 		}
 	}
 
@@ -181,8 +181,8 @@ public class AntMap extends JPanel implements ActionListener {
 			}
 		} catch (Exception e) {
 			System.out
-					.println("Erreur lors de l'initialisation de la taille du map: "
-							+ e.getMessage());
+			.println("Erreur lors de l'initialisation de la taille du map: "
+					+ e.getMessage());
 		} finally {
 			ClosingTools.closeQuietly(br);
 		}
@@ -310,7 +310,7 @@ public class AntMap extends JPanel implements ActionListener {
 				}
 
 				if (cheminPlusCourt.size() > 1) {
-
+					
 					try {
 						if (cheminPlusCourt.get(0).getIdOrigine().equals("G")) {
 							Thread.sleep(vitesseDeplacement * 2);
@@ -324,7 +324,7 @@ public class AntMap extends JPanel implements ActionListener {
 					// Placer graphiquement le pirate
 					graph.getNode(cheminPlusCourt.get(0).getX(),
 							cheminPlusCourt.get(0).getY()).setId(
-							cheminPlusCourt.get(0).getIdOrigine());
+									cheminPlusCourt.get(0).getIdOrigine());
 					graph.getNode(cheminPlusCourt.get(1).getX(),
 							cheminPlusCourt.get(1).getY()).setId("S");
 
@@ -352,7 +352,123 @@ public class AntMap extends JPanel implements ActionListener {
 								// graph.getNode(ant.getPosition().getX(),
 								// ant.getPosition().getY())
 								// .setId(ant.getPosition().getIdOrigine());
-								// listPommes.get(x).setId(" ");
+								nb++;
+								if(nb == nbAntSorties)
+									listPommes.get(x).setId(" ");
+								
+								ant.setTrouve(true);
+
+								nbAntArrivees++;
+								nbAntEnCours--;
+							}
+						}
+					}
+
+					// Actualiser la map
+					this.actualiserMap();
+					this.repaintFrame();
+				}
+
+				if (listeAnt.size() == 1) {
+					nbTour++;
+				} else if (i == listeAnt.size() - 1) {
+					nbTour++;
+				}
+
+			}
+		}
+
+		isNotDisabled = true;
+		buttonLancer.setEnabled(isNotDisabled);
+		buttonLoadFile.setEnabled(isNotDisabled);
+
+	}
+	
+	public void retourAnt(Ant ant, Node nodeDepart, Node nodePomme, List<Node> cheminPlusCourt) {
+
+		List<Node> cheminRetour = new ArrayList<Node>();
+		for(int i = cheminPlusCourt.size() - 1; i > 0; i++) {
+			
+		}
+		
+		
+		System.out.println("Nb ant envoyees : " + nbAntSorties);
+
+				// Recherche du chemin le plus court vers un ou plusieurs
+				// tresors
+				List<Node> cheminPlusCourt = new ArrayList<Node>();
+				int distance = 0;
+				
+					Node nodeDepart = graph.getNode(ant.getPosition().getX(),
+							ant.getPosition().getY());
+					Node nodeArriver = graph.getNode(listPommes.get(x).getX(),
+							listPommes.get(x).getY());
+					List<Node> nodeDejaPasser = null;
+
+					Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver,
+							nodeDejaPasser);
+
+					List<Node> nouveauCheminCourt = d
+							.cheminPlusCourtOptimiser();
+					int nouveauCheminCourtDistance = nouveauCheminCourt.size();
+					if (distance == 0) {
+						cheminPlusCourt = nouveauCheminCourt;
+						distance = cheminPlusCourt.size();
+					} else if (distance > nouveauCheminCourtDistance) {
+						cheminPlusCourt = nouveauCheminCourt;
+						distance = cheminPlusCourt.size();
+					} else {
+						// on garde la précedente distance
+					}
+				}
+
+				if (cheminPlusCourt.size() > 1) {
+					
+					try {
+						if (cheminPlusCourt.get(0).getIdOrigine().equals("G")) {
+							Thread.sleep(vitesseDeplacement * 2);
+						} else {
+							Thread.sleep(vitesseDeplacement);
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+					// Placer graphiquement le pirate
+					graph.getNode(cheminPlusCourt.get(0).getX(),
+							cheminPlusCourt.get(0).getY()).setId(
+									cheminPlusCourt.get(0).getIdOrigine());
+					graph.getNode(cheminPlusCourt.get(1).getX(),
+							cheminPlusCourt.get(1).getY()).setId("S");
+
+					// Changer la postion du pirate
+					ant.setPosition(cheminPlusCourt.get(1));
+					// evite au pirate de faire des aller-retour sur la même
+					// case s'il y a trop de monde sur la map
+					// pirate.ajouterNodeDejaPasse(cheminPlusCourt.get(0));
+					nbDeplacement++;
+
+					// Si un pirate commence à se déplacer
+					for (int j = 0; j < listNodeDepart.size(); j++) {
+						if (cheminPlusCourt.get(0)
+								.equals(listNodeDepart.get(j))
+								&& !cheminPlusCourt.get(1).equals(
+										listNodeDepart.get(j))) {
+							nbAntEnCours++;
+						}
+					}
+
+					if (!ant.isTrouve()) {
+						// Si un pirate est arrivée sur un trésor de la map
+						for (int x = 0; x < listPommes.size(); x++) {
+							if (ant.getPosition().equals(listPommes.get(x))) {
+								// graph.getNode(ant.getPosition().getX(),
+								// ant.getPosition().getY())
+								// .setId(ant.getPosition().getIdOrigine());
+								nb++;
+								if(nb == nbAntSorties)
+									listPommes.get(x).setId(" ");
+								
 								ant.setTrouve(true);
 
 								nbAntArrivees++;

@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 
 import simulation.Personnage;
 import simulation.common.graph.Dijkstra;
+import simulation.common.graph.Edge;
 import simulation.common.graph.Graph;
 import simulation.common.graph.Node;
 import simulation.common.tools.ClosingTools;
@@ -51,6 +52,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 	private JPanel jpNord;
 	private JPanel jpSud;
+	private JPanel jpInfosCombat;
+	private JPanel jpX;
+	private JPanel jpY;
 	private JButton buttonLancer;
 
 	private DefaultListModel<String> informationsCombat = new DefaultListModel<String>();
@@ -81,6 +85,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		jpNord.setBackground(BG_COLOR);
 
 		jpSud = new JPanel();
+		jpInfosCombat = new JPanel();
+		jpX = new JPanel();
+		jpY = new JPanel();
 
 		initJpSudComponents();
 
@@ -114,8 +121,15 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		buttonLancer = new JButton("Fight!");
 		buttonLancer.addActionListener(this);
 
-		jpSud.add(buttonLancer, BorderLayout.EAST);
-		jpSud.add(scrollInformationsCombat, BorderLayout.WEST);
+		jpInfosCombat.add(buttonLancer, BorderLayout.NORTH);
+		jpInfosCombat.add(scrollInformationsCombat, BorderLayout.SOUTH);
+
+		jpX.setBackground(BG_COLOR.BLUE);
+		jpY.setBackground(BG_COLOR.RED);
+
+		jpSud.add(jpX, BorderLayout.EAST);
+		jpSud.add(jpInfosCombat, BorderLayout.CENTER);
+		jpSud.add(jpY, BorderLayout.WEST);
 	}
 
 	private void loadPersonnages() {
@@ -178,6 +192,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		if (fichier.exists()) {
 			initTailleMap();
 			initParcellesMap();
+			initDistanceEntreParcelle();
 		}
 	}
 
@@ -187,9 +202,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 		jpNord = new JPanel();
 		initJpNordComponents();
-
-		jpSud = new JPanel();
-		initJpSudComponents();
 
 		add(jpNord, BorderLayout.NORTH);
 		add(jpSud, BorderLayout.SOUTH);
@@ -241,18 +253,20 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1,
 								cptligne);
-						graph.registerNode(nodes[cptligne][i - 1]);
-						nodes[cptligne][i - 1].setMinDistance(1);
 
 						if (tab2[i].equals("X")) {
 							equipeA.getCombattant(combattantEquipeA)
 									.setPosition(nodes[cptligne][i - 1]);
+							equipeA.getCombattant(combattantEquipeA)
+									.getPosition().setIdOrigine("X");
 							combattantEquipeA++;
 						}
 
 						if (tab2[i].equals("Y")) {
 							equipeB.getCombattant(combattantEquipeB)
 									.setPosition(nodes[cptligne][i - 1]);
+							equipeB.getCombattant(combattantEquipeB)
+									.getPosition().setIdOrigine("Y");
 							combattantEquipeB++;
 						}
 					}
@@ -263,6 +277,25 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 			e.printStackTrace();
 		} finally {
 			ClosingTools.closeQuietly(br);
+		}
+	}
+
+	private void initDistanceEntreParcelle() {
+		for (int i = 0; i < nodes.length; i++) {
+			for (int j = 0; j < nodes[i].length; j++) {
+				if (nodes[i][j] != null) {
+					graph.registerNode(nodes[i][j]);
+
+					nodes[i][j].setMinDistance(1);
+					if (nodes[i][j + 1] != null) {
+						new Edge(nodes[i][j], nodes[i][j + 1], 1);
+					}
+					if (nodes[i + 1][j] != null) {
+						new Edge(nodes[i][j], nodes[i + 1][j], 1);
+					}
+				}
+
+			}
 		}
 	}
 
@@ -305,43 +338,33 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		// + c.getPosition().toString());
 		// }
 
-		System.out.println("-----------------------");
+		informationsCombat.addElement("FIGHT !!!");
 
-		System.out.println("FIGHT !!!");
-		System.out.println("-----------------------");
+		while (equipeA.getNbCombattantVivant() > 0
+				&& equipeB.getNbCombattantVivant() > 0) {
 
-		lancerAttaque(equipeA, equipeB);
+			lancerAttaque(equipeA, equipeB);
 
-		// while (equipeA.getNbCombattantVivant() > 0
-		// && equipeB.getNbCombattantVivant() > 0) {
-		// lancerAttaque(equipeA, equipeB);
-		//
-		// if (equipeB.getNbCombattantVivant() > 0) {
-		// lancerAttaque(equipeB, equipeA);
-		// }
-		//
-		// System.out.println("Fin de round");
-		// informationsCombat.addElement("Fin de round");
-		//
-		// System.out.println("----------A------------");
-		// for (int i = 0; i < equipeA.getSize(); i++) {
-		// equipeA.getCombattant(i).afficherHP();
-		// ;
-		// }
-		// System.out.println("----------B------------");
-		// for (int i = 0; i < equipeB.getSize(); i++) {
-		// equipeB.getCombattant(i).afficherHP();
-		// ;
-		// }
-		// System.out.println("-----------------------");
-		// }
+			if (equipeB.getNbCombattantVivant() > 0) {
+				lancerAttaque(equipeB, equipeA);
+			}
+
+			// System.out.println("----------A------------");
+			// for (int i = 0; i < equipeA.getSize(); i++) {
+			// equipeA.getCombattant(i).afficherHP();
+			// ;
+			// }
+			// System.out.println("----------B------------");
+			// for (int i = 0; i < equipeB.getSize(); i++) {
+			// equipeB.getCombattant(i).afficherHP();
+			// ;
+			// }
+		}
 
 		if (equipeA.getNbCombattantVivant() > 0) {
 			informationsCombat.addElement("L'équipe A a gagné.");
-			System.out.println("L'équipe A a gagné.");
 		} else {
 			informationsCombat.addElement("L'équipe B a gagné.");
-			System.out.println("L'équipe B a gagné.");
 		}
 
 	}
@@ -365,56 +388,89 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	public void deplacerCombattant(Combattant attaquant, Combattant defenseur) {
 
 		boolean defenseurAttaque = false;
+		String idOrigineAttaquant = attaquant.getPosition().getIdOrigine();
 
 		List<Node> cheminPlusCourt = new ArrayList<Node>();
 
 		Node nodeDepart = graph.getNode(attaquant.getPosition().getX(),
 				attaquant.getPosition().getY());
 
-		System.out.println(attaquant.getNomPersonnage() + " : "
-				+ attaquant.getPosition().toString());
-
-		System.out.println(defenseur.getNomPersonnage() + " : "
-				+ defenseur.getPosition().toString());
-
 		while (!defenseurAttaque) {
-			System.out.println("while");
 
 			Dijkstra d = new Dijkstra(graph, attaquant.getPosition(),
 					defenseur.getPosition(), null);
 
 			cheminPlusCourt = d.cheminPlusCourtOptimiser();
 
-			System.out.println("cheminPlusCourt.size() = "
-					+ cheminPlusCourt.size());
-
 			if (cheminPlusCourt.size() > 1) {
 
 				try {
-					Thread.sleep(100);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 
 				// Placer graphiquement le pirate
 				graph.getNode(cheminPlusCourt.get(0).getX(),
-						cheminPlusCourt.get(0).getY()).setId(
-						cheminPlusCourt.get(0).getIdOrigine());
+						cheminPlusCourt.get(0).getY()).setId(" ");
 				graph.getNode(cheminPlusCourt.get(1).getX(),
-						cheminPlusCourt.get(1).getY()).setId("S");
+						cheminPlusCourt.get(1).getY()).setId(
+						attaquant.getPosition().getIdOrigine());
+
+				if (cheminPlusCourt.get(2).getIdOrigine()
+						.equals(defenseur.getPosition().getIdOrigine()))
+					defenseurAttaque = true;
 
 				// Changer la postion du combattant
 				attaquant.setPosition(cheminPlusCourt.get(1));
-
-				// Si un pirate est arrivée sur un trésor de la map
-				if (attaquant.getPosition().equals(defenseur.getPosition())) {
-					System.out.println("ARRIVEE !!!!");
-					defenseurAttaque = true;
-				}
+				attaquant.getPosition().setId(idOrigineAttaquant);
 
 				// Actualiser la map
 				this.actualiserMap();
 				this.repaintFrame();
+
+			}
+
+		}
+
+		try {
+			informationsCombat.addElement(attaquant.getNomPersonnage()
+					+ " attaque " + defenseur.getNomPersonnage());
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		while (!nodeDepart.equals(attaquant.getPosition())) {
+
+			Dijkstra d = new Dijkstra(graph, attaquant.getPosition(),
+					nodeDepart, null);
+
+			cheminPlusCourt = d.cheminPlusCourtOptimiser();
+
+			if (cheminPlusCourt.size() > 1) {
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				// Placer graphiquement le pirate
+				graph.getNode(cheminPlusCourt.get(0).getX(),
+						cheminPlusCourt.get(0).getY()).setId(" ");
+				graph.getNode(cheminPlusCourt.get(1).getX(),
+						cheminPlusCourt.get(1).getY()).setId(
+						attaquant.getPosition().getIdOrigine());
+
+				// Changer la postion du combattant
+				attaquant.setPosition(cheminPlusCourt.get(1));
+				attaquant.getPosition().setId(idOrigineAttaquant);
+
+				// Actualiser la map
+				this.actualiserMap();
+				this.repaintFrame();
+
 			}
 
 		}

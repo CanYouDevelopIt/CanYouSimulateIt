@@ -58,21 +58,27 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	private JButton buttonLancer;
 
 	private DefaultListModel<String> informationsCombat = new DefaultListModel<String>();
-	private JList<String> jInformationsCombat = new JList<String>(informationsCombat);
-	private JScrollPane scrollInformationsCombat = new JScrollPane(jInformationsCombat);
+	private JList<String> jInformationsCombat = new JList<String>(
+			informationsCombat);
+	private JScrollPane scrollInformationsCombat = new JScrollPane(
+			jInformationsCombat);
+	private CombattantListModel lCombattantsX;
+	private CombattantListModel lCombattantsY;
+	private JList<Combattant> jCombattantsX;
+	private JList<Combattant> jCombattantsY;
 
 	private boolean isNotDisabled = true;
 
 	private List<Personnage> listePersonnages;
-	private EquipeCombattant equipeA;
-	private EquipeCombattant equipeB;
+	private EquipeCombattant equipeX;
+	private EquipeCombattant equipeY;
 
 	public ShonenFightMap(MainApplicationView mainAppView) {
 		mainApplicationView = mainAppView;
 
-		buildPanel(); // Creation Panel
 		loadPersonnages(); // Chargement de tous les personnages
 		creerEquipes();
+		buildPanel(); // Creation Panel
 
 		initMap();
 	}
@@ -102,7 +108,8 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				if (node == null) {
 					jpNord.add(imageFactory.getImageLabel(null, null));
 				} else {
-					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine()));
+					jpNord.add(imageFactory.getImageLabel(node.getId(),
+							node.getIdOrigine()));
 				}
 			}
 		}
@@ -123,8 +130,8 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		jpInfosCombat.add(buttonLancer, BorderLayout.NORTH);
 		jpInfosCombat.add(scrollInformationsCombat, BorderLayout.SOUTH);
 
-		jpX.setBackground(BG_COLOR.BLUE);
-		jpY.setBackground(BG_COLOR.RED);
+		jpX.add(jCombattantsX);
+		jpY.add(jCombattantsY);
 
 		jpSud.add(jpX, BorderLayout.EAST);
 		jpSud.add(jpInfosCombat, BorderLayout.CENTER);
@@ -140,31 +147,37 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 		Random rand = new Random();
 
-		equipeA = new EquipeCombattant();
-		equipeB = new EquipeCombattant();
+		equipeX = new EquipeCombattant();
+		equipeY = new EquipeCombattant();
 
-		while (equipeA.getSize() < 5) {
+		while (equipeX.getSize() < 5) {
 			int chiffreAlea = rand.nextInt(listePersonnages.size() - 1);
 			Combattant p = (Combattant) listePersonnages.get(chiffreAlea);
 
-			if (!equipeA.contientCombattant(p)) {
-				equipeA.ajouterCombattant(p);
+			if (!equipeX.contientCombattant(p)) {
+				equipeX.ajouterCombattant(p);
 				System.out.print(p.getNomPersonnage() + "|");
 			}
 		}
 		System.out.println("");
 		System.out.println("VS");
-		while (equipeB.getSize() < 5) {
+		while (equipeY.getSize() < 5) {
 			int chiffreAlea = rand.nextInt(listePersonnages.size() - 1);
 			Combattant p = (Combattant) listePersonnages.get(chiffreAlea);
 
-			if (!equipeB.contientCombattant(p) && !equipeA.contientCombattant(p)) {
-				equipeB.ajouterCombattant(p);
+			if (!equipeY.contientCombattant(p)
+					&& !equipeX.contientCombattant(p)) {
+				equipeY.ajouterCombattant(p);
 				System.out.print(p.getNomPersonnage() + "|");
 			}
 		}
 
-		System.out.println("");
+		lCombattantsX = new CombattantListModel(equipeX.getEquipe());
+		lCombattantsY = new CombattantListModel(equipeY.getEquipe());
+		jCombattantsX = new JList<Combattant>(lCombattantsX);
+		jCombattantsY = new JList<Combattant>(lCombattantsY);
+		jCombattantsX.setCellRenderer(new CombattantCellRenderer());
+		jCombattantsY.setCellRenderer(new CombattantCellRenderer());
 	}
 
 	private void initMap() {
@@ -176,7 +189,8 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 		setSize(720, 480);
 		mainApplicationView.setResizable(false);
-		mainApplicationView.setPreferredSize(new Dimension(getWidth(), getHeight() + 20));
+		mainApplicationView.setPreferredSize(new Dimension(getWidth(),
+				getHeight() + 20));
 
 		actualiserMap();
 	}
@@ -222,7 +236,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				nbcol = tab.length - 1;
 			}
 		} catch (Exception e) {
-			System.out.println("Erreur lors de l'initialisation de la taille du map: " + e.getMessage());
+			System.out
+					.println("Erreur lors de l'initialisation de la taille du map: "
+							+ e.getMessage());
 		} finally {
 			ClosingTools.closeQuietly(br);
 		}
@@ -242,20 +258,26 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 			while ((ligne2 = br.readLine()) != null) {
 				String[] tab2 = ligne2.split("");
 				for (int i = 1; i < tab2.length; i++) {
-					if (tab2[i].equals(" ") || tab2[i].equals("F") || tab2[i].equals("X") || tab2[i].equals("Y")
+					if (tab2[i].equals(" ") || tab2[i].equals("F")
+							|| tab2[i].equals("X") || tab2[i].equals("Y")
 							|| tab2[i].equals("C")) {
 
-						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1, cptligne);
+						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1,
+								cptligne);
 
 						if (tab2[i].equals("X")) {
-							equipeA.getCombattant(combattantEquipeA).setPosition(nodes[cptligne][i - 1]);
-							equipeA.getCombattant(combattantEquipeA).getPosition().setIdOrigine("X");
+							equipeX.getCombattant(combattantEquipeA)
+									.setPosition(nodes[cptligne][i - 1]);
+							equipeX.getCombattant(combattantEquipeA)
+									.getPosition().setIdOrigine("X");
 							combattantEquipeA++;
 						}
 
 						if (tab2[i].equals("Y")) {
-							equipeB.getCombattant(combattantEquipeB).setPosition(nodes[cptligne][i - 1]);
-							equipeB.getCombattant(combattantEquipeB).getPosition().setIdOrigine("Y");
+							equipeY.getCombattant(combattantEquipeB)
+									.setPosition(nodes[cptligne][i - 1]);
+							equipeY.getCombattant(combattantEquipeB)
+									.getPosition().setIdOrigine("Y");
 							combattantEquipeB++;
 						}
 					}
@@ -329,12 +351,13 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 		informationsCombat.addElement("FIGHT !!!");
 
-		while (equipeA.getNbCombattantVivant() > 0 && equipeB.getNbCombattantVivant() > 0) {
+		while (equipeX.getNbCombattantVivant() > 0
+				&& equipeY.getNbCombattantVivant() > 0) {
 
-			lancerAttaque(equipeA, equipeB);
+			lancerAttaque(equipeX, equipeY);
 
-			if (equipeB.getNbCombattantVivant() > 0) {
-				lancerAttaque(equipeB, equipeA);
+			if (equipeY.getNbCombattantVivant() > 0) {
+				lancerAttaque(equipeY, equipeX);
 			}
 
 			// System.out.println("----------A------------");
@@ -349,7 +372,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 			// }
 		}
 
-		if (equipeA.getNbCombattantVivant() > 0) {
+		if (equipeX.getNbCombattantVivant() > 0) {
 			informationsCombat.addElement("L'équipe A a gagné.");
 		} else {
 			informationsCombat.addElement("L'équipe B a gagné.");
@@ -357,15 +380,16 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 	}
 
-	public void lancerAttaque(EquipeCombattant equipeAttaquant, EquipeCombattant equipeDefenseur) {
+	public void lancerAttaque(EquipeCombattant equipeAttaquant,
+			EquipeCombattant equipeDefenseur) {
 
 		Combattant attaquant = equipeAttaquant.getProchainCombattant();
 		Combattant defenseur = equipeDefenseur.getCombattantFaible();
 
-		attaquant.AttaqueCombattant(defenseur);
 		deplacerCombattant(attaquant, defenseur);
 
-		if (defenseur.getEtatPersonnage().getClass().getSimpleName().equals(EtatInactif.class.getSimpleName())) {
+		if (defenseur.getEtatPersonnage().getClass().getSimpleName()
+				.equals(EtatInactif.class.getSimpleName())) {
 			equipeDefenseur.aPerduCombattant();
 		}
 
@@ -378,11 +402,13 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 		List<Node> cheminPlusCourt = new ArrayList<Node>();
 
-		Node nodeDepart = graph.getNode(attaquant.getPosition().getX(), attaquant.getPosition().getY());
+		Node nodeDepart = graph.getNode(attaquant.getPosition().getX(),
+				attaquant.getPosition().getY());
 
 		while (!defenseurAttaque) {
 
-			Dijkstra d = new Dijkstra(graph, attaquant.getPosition(), defenseur.getPosition(), null);
+			Dijkstra d = new Dijkstra(graph, attaquant.getPosition(),
+					defenseur.getPosition(), null);
 
 			cheminPlusCourt = d.cheminPlusCourtOptimiser();
 
@@ -395,11 +421,14 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				}
 
 				// Placer graphiquement le pirate
-				graph.getNode(cheminPlusCourt.get(0).getX(), cheminPlusCourt.get(0).getY()).setId(" ");
-				graph.getNode(cheminPlusCourt.get(1).getX(), cheminPlusCourt.get(1).getY())
-						.setId(attaquant.getPosition().getIdOrigine());
+				graph.getNode(cheminPlusCourt.get(0).getX(),
+						cheminPlusCourt.get(0).getY()).setId(" ");
+				graph.getNode(cheminPlusCourt.get(1).getX(),
+						cheminPlusCourt.get(1).getY()).setId(
+						attaquant.getPosition().getIdOrigine());
 
-				if (cheminPlusCourt.get(2).getIdOrigine().equals(defenseur.getPosition().getIdOrigine()))
+				if (cheminPlusCourt.get(2).getIdOrigine()
+						.equals(defenseur.getPosition().getIdOrigine()))
 					defenseurAttaque = true;
 
 				// Changer la postion du combattant
@@ -415,15 +444,25 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		}
 
 		try {
-			informationsCombat.addElement(attaquant.getNomPersonnage() + " attaque " + defenseur.getNomPersonnage());
+			informationsCombat.addElement(attaquant.getNomPersonnage()
+					+ " attaque " + defenseur.getNomPersonnage());
+
 			Thread.sleep(2000);
+
+			attaquant.AttaqueCombattant(defenseur);
+
+			if (defenseur.getPointDeVie() < 1)
+				informationsCombat.addElement(defenseur.getNomPersonnage()
+						+ " est mort.");
+
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
 		while (!nodeDepart.equals(attaquant.getPosition())) {
 
-			Dijkstra d = new Dijkstra(graph, attaquant.getPosition(), nodeDepart, null);
+			Dijkstra d = new Dijkstra(graph, attaquant.getPosition(),
+					nodeDepart, null);
 
 			cheminPlusCourt = d.cheminPlusCourtOptimiser();
 
@@ -436,9 +475,11 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				}
 
 				// Placer graphiquement le pirate
-				graph.getNode(cheminPlusCourt.get(0).getX(), cheminPlusCourt.get(0).getY()).setId(" ");
-				graph.getNode(cheminPlusCourt.get(1).getX(), cheminPlusCourt.get(1).getY())
-						.setId(attaquant.getPosition().getIdOrigine());
+				graph.getNode(cheminPlusCourt.get(0).getX(),
+						cheminPlusCourt.get(0).getY()).setId(" ");
+				graph.getNode(cheminPlusCourt.get(1).getX(),
+						cheminPlusCourt.get(1).getY()).setId(
+						attaquant.getPosition().getIdOrigine());
 
 				// Changer la postion du combattant
 				attaquant.setPosition(cheminPlusCourt.get(1));

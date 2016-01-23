@@ -16,7 +16,7 @@ public class Combattant extends Personnage {
 		pointAttaque = _attaque;
 		pointDeVie = _vie;
 		aPasCombattu = true;
-		
+
 		EtatPersonnage etat = new EtatCombattant();
 		etat.changerEtat(this);
 	}
@@ -36,7 +36,7 @@ public class Combattant extends Personnage {
 	public void setPointDeVie(int pointDeVie) {
 		this.pointDeVie = pointDeVie;
 	}
-	
+
 	public boolean getAPasCombattu() {
 		return aPasCombattu;
 	}
@@ -45,22 +45,24 @@ public class Combattant extends Personnage {
 		this.aPasCombattu = val;
 	}
 
-	public void AttaqueCombattant(Combattant adversaire){
+	public void AttaqueCombattant(Combattant adversaire) {
 		int pdvAdversaire = adversaire.getPointDeVie() - pointAttaque;
+
+		if (pdvAdversaire < 1)
+			pdvAdversaire = 0;
+
 		adversaire.setPointDeVie(pdvAdversaire);
-		
-		System.out.println(this.getNomPersonnage() + " a attaqué " + adversaire.getNomPersonnage());
-		System.out.println(adversaire.getNomPersonnage() + " a perdu " + pointAttaque + " HP. Il lui reste " + pdvAdversaire + "HP.");
-		
-		if(adversaire.getPointDeVie() < 1){
+
+		if (adversaire.getPointDeVie() < 1) {
 			EtatInactif etat = new EtatInactif();
 			etat.changerEtat(adversaire);
 			System.out.println(adversaire.getNomPersonnage() + " est KO.");
 		}
 	}
-	
-	public void afficherHP(){
-		System.out.println(this.getNomPersonnage() + " a " + this.getPointDeVie());
+
+	public void afficherHP() {
+		System.out.println(this.getNomPersonnage() + " a "
+				+ this.getPointDeVie());
 	}
-	
+
 }

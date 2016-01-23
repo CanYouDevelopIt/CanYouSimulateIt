@@ -52,6 +52,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 	private JPanel jpNord;
 	private JPanel jpSud;
+	private JPanel jpInfosCombat;
+	private JPanel jpX;
+	private JPanel jpY;
 	private JButton buttonLancer;
 
 	private DefaultListModel<String> informationsCombat = new DefaultListModel<String>();
@@ -82,6 +85,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		jpNord.setBackground(BG_COLOR);
 
 		jpSud = new JPanel();
+		jpInfosCombat = new JPanel();
+		jpX = new JPanel();
+		jpY = new JPanel();
 
 		initJpSudComponents();
 
@@ -115,8 +121,15 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		buttonLancer = new JButton("Fight!");
 		buttonLancer.addActionListener(this);
 
-		jpSud.add(buttonLancer, BorderLayout.EAST);
-		jpSud.add(scrollInformationsCombat, BorderLayout.WEST);
+		jpInfosCombat.add(buttonLancer, BorderLayout.NORTH);
+		jpInfosCombat.add(scrollInformationsCombat, BorderLayout.SOUTH);
+
+		jpX.setBackground(BG_COLOR.BLUE);
+		jpY.setBackground(BG_COLOR.RED);
+
+		jpSud.add(jpX, BorderLayout.EAST);
+		jpSud.add(jpInfosCombat, BorderLayout.CENTER);
+		jpSud.add(jpY, BorderLayout.WEST);
 	}
 
 	private void loadPersonnages() {
@@ -190,9 +203,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		jpNord = new JPanel();
 		initJpNordComponents();
 
-		jpSud = new JPanel();
-		initJpSudComponents();
-
 		add(jpNord, BorderLayout.NORTH);
 		add(jpSud, BorderLayout.SOUTH);
 		setBackground(BG_COLOR);
@@ -243,8 +253,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1,
 								cptligne);
-						// graph.registerNode(nodes[cptligne][i - 1]);
-						// nodes[cptligne][i - 1].setMinDistance(1);
 
 						if (tab2[i].equals("X")) {
 							equipeA.getCombattant(combattantEquipeA)

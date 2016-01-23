@@ -95,6 +95,66 @@ public class Dijkstra {
 		return cheminPlusCourt;
 	}
 	
+public List<Node> cheminRetourOptimiser(){
+		
+		List<Node> cheminPlusCourtInverse = new ArrayList<Node>();
+		List<Node> cheminPlusCourt = new ArrayList<Node>();
+		
+		nodeDepart.setMinDistance(0);
+		nodeDepart.setNodePrecedent(null);
+		
+		Node nodeActuel = null;
+		Node nodeFils = null;
+		boolean nodeInterdit;
+		int distanceActuel;
+		
+		while(listePassage.size() > 0){
+			
+			nodeActuel = listePassage.poll();
+			//System.out.println(nodeActuel.getEdges().size());
+			
+			for(Edge unEdge : nodeActuel.getEdges()){
+				
+				nodeFils = unEdge.getOther(nodeActuel);
+				distanceActuel = unEdge.getDistance() + nodeActuel.getMinDistance();
+				
+				nodeInterdit = false;
+				
+				if(nodesDejaPasses != null){
+					for(int i = 0; i < nodesDejaPasses.size(); i++){
+						if(nodesDejaPasses.get(i).equals(nodeFils)){
+							//System.out.println("INTERDIT !!!!!!" + nodesDejaPasses.get(i).getX() + ";" + nodesDejaPasses.get(i).getY());
+							nodeInterdit = true;
+						}
+					}
+				}
+				
+				if((nodeFils.getId().equals("S") && distanceActuel < 2) || nodeFils.getId().equals("A") || nodeInterdit){
+				}
+				else{	
+					if(distanceActuel < nodeFils.getMinDistance()){
+						
+						//System.out.println(nodeFils.getX() + ";" + nodeFils.getY());
+						
+						nodeFils.setMinDistance(distanceActuel);
+						nodeFils.setNodePrecedent(nodeActuel);
+						listePassage.add(nodeFils);
+					}
+				}	
+			}
+		}
+		
+		for(Node n = nodeArrive; n != null; n = n.getNodePrecedent()){
+			cheminPlusCourtInverse.add(n);
+		}
+		
+		for(int i = cheminPlusCourtInverse.size() - 1; i >= 0; i--){
+			cheminPlusCourt.add(cheminPlusCourtInverse.get(i));
+		}
+		
+		return cheminPlusCourt;
+	}
+	
 	public Node getNodeArrive() {
 		return nodeArrive;
 	}

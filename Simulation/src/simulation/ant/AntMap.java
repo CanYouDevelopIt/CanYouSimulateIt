@@ -263,7 +263,6 @@ public class AntMap extends JPanel implements ActionListener {
 	public void deplacerAnt() {
 
 		List<Ant> listeAnt = new ArrayList<Ant>();
-
 		for (int i = 0; i < listNbAntSorti.size(); i++) {
 			for (int j = 0; j < listNbAntSorti.get(i); j++) {
 				Node positionDepart = listNodeDepart.get(i);
@@ -273,7 +272,6 @@ public class AntMap extends JPanel implements ActionListener {
 				nbAntSorties++;
 			}
 		}
-		int nb = Integer.parseInt(nbAntSorti.getText());
 
 		System.out.println("Nb ant envoyees : " + nbAntSorties);
 		while (nbAntSorties != nbAntArrivees) {
@@ -310,7 +308,7 @@ public class AntMap extends JPanel implements ActionListener {
 				}
 
 				if (cheminPlusCourt.size() > 1) {
-					
+
 					try {
 						if (cheminPlusCourt.get(0).getIdOrigine().equals("G")) {
 							Thread.sleep(vitesseDeplacement * 2);
@@ -349,17 +347,14 @@ public class AntMap extends JPanel implements ActionListener {
 						// Si un pirate est arrivée sur un trésor de la map
 						for (int x = 0; x < listPommes.size(); x++) {
 							if (ant.getPosition().equals(listPommes.get(x))) {
-								// graph.getNode(ant.getPosition().getX(),
-								// ant.getPosition().getY())
-								// .setId(ant.getPosition().getIdOrigine());
-								nb++;
-								if(nb == nbAntSorties)
-									listPommes.get(x).setId(" ");
-								
-								ant.setTrouve(true);
+								graph.getNode(ant.getPosition().getX(),
+										ant.getPosition().getY())
+										.setId(ant.getPosition().getIdOrigine());
+								listPommes.get(x).setId(" ");
 
-								nbAntArrivees++;
-								nbAntEnCours--;
+								ant.setTrouve(true);
+								retourAnt(ant);
+
 							}
 						}
 					}
@@ -383,118 +378,80 @@ public class AntMap extends JPanel implements ActionListener {
 		buttonLoadFile.setEnabled(isNotDisabled);
 
 	}
-	
-	public void retourAnt(Ant ant, Node nodeDepart, Node nodePomme, List<Node> cheminPlusCourt) {
 
-		List<Node> cheminRetour = new ArrayList<Node>();
-		for(int i = cheminPlusCourt.size() - 1; i > 0; i++) {
-			
-		}
-		
-		
+	public void retourAnt(Ant ant) {
+
+
+
+
 		System.out.println("Nb ant envoyees : " + nbAntSorties);
+		while (nbAntSorties != nbAntArrivees) {
 
-				// Recherche du chemin le plus court vers un ou plusieurs
-				// tresors
-				List<Node> cheminPlusCourt = new ArrayList<Node>();
-				int distance = 0;
-				
-					Node nodeDepart = graph.getNode(ant.getPosition().getX(),
-							ant.getPosition().getY());
-					Node nodeArriver = graph.getNode(listPommes.get(x).getX(),
-							listPommes.get(x).getY());
-					List<Node> nodeDejaPasser = null;
 
-					Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver,
-							nodeDejaPasser);
+			// Recherche du chemin le plus court vers un ou plusieurs
+			// tresors
+			List<Node> cheminPlusCourt = new ArrayList<Node>();
+			int distance = 0;
+			Node nodeDepart = graph.getNode(ant.getPosition().getX(),
+					ant.getPosition().getY());
+			Node nodeArriver = graph.getNode(listNodeDepart.get(0).getX(),
+					listNodeDepart.get(0).getY());
+			List<Node> nodeDejaPasser = null;
 
-					List<Node> nouveauCheminCourt = d
-							.cheminPlusCourtOptimiser();
-					int nouveauCheminCourtDistance = nouveauCheminCourt.size();
-					if (distance == 0) {
-						cheminPlusCourt = nouveauCheminCourt;
-						distance = cheminPlusCourt.size();
-					} else if (distance > nouveauCheminCourtDistance) {
-						cheminPlusCourt = nouveauCheminCourt;
-						distance = cheminPlusCourt.size();
+			Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver,
+					nodeDejaPasser);
+
+			cheminPlusCourt = d.cheminRetourOptimiser();
+
+
+			if (cheminPlusCourt.size() > 1) {
+
+				try {
+					if (cheminPlusCourt.get(0).getIdOrigine().equals("G")) {
+						Thread.sleep(vitesseDeplacement * 2);
 					} else {
-						// on garde la précedente distance
+						Thread.sleep(vitesseDeplacement);
 					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 
-				if (cheminPlusCourt.size() > 1) {
-					
-					try {
-						if (cheminPlusCourt.get(0).getIdOrigine().equals("G")) {
-							Thread.sleep(vitesseDeplacement * 2);
-						} else {
-							Thread.sleep(vitesseDeplacement);
-						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+				// Placer graphiquement le pirate
+				graph.getNode(cheminPlusCourt.get(0).getX(),
+						cheminPlusCourt.get(0).getY()).setId(
+								cheminPlusCourt.get(0).getIdOrigine());
+				graph.getNode(cheminPlusCourt.get(1).getX(),
+						cheminPlusCourt.get(1).getY()).setId("S");
 
-					// Placer graphiquement le pirate
-					graph.getNode(cheminPlusCourt.get(0).getX(),
-							cheminPlusCourt.get(0).getY()).setId(
-									cheminPlusCourt.get(0).getIdOrigine());
-					graph.getNode(cheminPlusCourt.get(1).getX(),
-							cheminPlusCourt.get(1).getY()).setId("S");
+				// Changer la postion du pirate
+				ant.setPosition(cheminPlusCourt.get(1));
+				// evite au pirate de faire des aller-retour sur la même
+				// case s'il y a trop de monde sur la map
+				// pirate.ajouterNodeDejaPasse(cheminPlusCourt.get(0));
+				nbDeplacement++;
 
-					// Changer la postion du pirate
-					ant.setPosition(cheminPlusCourt.get(1));
-					// evite au pirate de faire des aller-retour sur la même
-					// case s'il y a trop de monde sur la map
-					// pirate.ajouterNodeDejaPasse(cheminPlusCourt.get(0));
-					nbDeplacement++;
 
-					// Si un pirate commence à se déplacer
-					for (int j = 0; j < listNodeDepart.size(); j++) {
-						if (cheminPlusCourt.get(0)
-								.equals(listNodeDepart.get(j))
-								&& !cheminPlusCourt.get(1).equals(
-										listNodeDepart.get(j))) {
-							nbAntEnCours++;
-						}
-					}
+				if (ant.getPosition().equals(nodeArriver)) {
+					graph.getNode(ant.getPosition().getX(),
+							ant.getPosition().getY())
+							.setId(ant.getPosition().getIdOrigine());
 
-					if (!ant.isTrouve()) {
-						// Si un pirate est arrivée sur un trésor de la map
-						for (int x = 0; x < listPommes.size(); x++) {
-							if (ant.getPosition().equals(listPommes.get(x))) {
-								// graph.getNode(ant.getPosition().getX(),
-								// ant.getPosition().getY())
-								// .setId(ant.getPosition().getIdOrigine());
-								nb++;
-								if(nb == nbAntSorties)
-									listPommes.get(x).setId(" ");
-								
-								ant.setTrouve(true);
-
-								nbAntArrivees++;
-								nbAntEnCours--;
-							}
-						}
-					}
-
-					// Actualiser la map
-					this.actualiserMap();
-					this.repaintFrame();
+					nbAntArrivees++;
+					nbAntEnCours--;
 				}
-
-				if (listeAnt.size() == 1) {
-					nbTour++;
-				} else if (i == listeAnt.size() - 1) {
-					nbTour++;
-				}
-
 			}
+			nbTour++;
+
+			// Actualiser la map
+			this.actualiserMap();
+			this.repaintFrame();
+
+
 		}
 
 		isNotDisabled = true;
 		buttonLancer.setEnabled(isNotDisabled);
 		buttonLoadFile.setEnabled(isNotDisabled);
-
 	}
 
 	@Override

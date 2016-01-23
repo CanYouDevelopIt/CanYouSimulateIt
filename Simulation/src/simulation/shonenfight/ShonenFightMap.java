@@ -330,36 +330,28 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		// + c.getPosition().toString());
 		// }
 
-		System.out.println("-----------------------");
+		informationsCombat.addElement("FIGHT !!!");
 
-		System.out.println("FIGHT !!!");
-		System.out.println("-----------------------");
+		while (equipeA.getNbCombattantVivant() > 0
+				&& equipeB.getNbCombattantVivant() > 0) {
 
-		lancerAttaque(equipeA, equipeB);
+			lancerAttaque(equipeA, equipeB);
 
-		// while (equipeA.getNbCombattantVivant() > 0
-		// && equipeB.getNbCombattantVivant() > 0) {
-		// lancerAttaque(equipeA, equipeB);
-		//
-		// if (equipeB.getNbCombattantVivant() > 0) {
-		// lancerAttaque(equipeB, equipeA);
-		// }
-		//
-		// System.out.println("Fin de round");
-		// informationsCombat.addElement("Fin de round");
-		//
-		// System.out.println("----------A------------");
-		// for (int i = 0; i < equipeA.getSize(); i++) {
-		// equipeA.getCombattant(i).afficherHP();
-		// ;
-		// }
-		// System.out.println("----------B------------");
-		// for (int i = 0; i < equipeB.getSize(); i++) {
-		// equipeB.getCombattant(i).afficherHP();
-		// ;
-		// }
-		// System.out.println("-----------------------");
-		// }
+			if (equipeB.getNbCombattantVivant() > 0) {
+				lancerAttaque(equipeB, equipeA);
+			}
+
+			// System.out.println("----------A------------");
+			// for (int i = 0; i < equipeA.getSize(); i++) {
+			// equipeA.getCombattant(i).afficherHP();
+			// ;
+			// }
+			// System.out.println("----------B------------");
+			// for (int i = 0; i < equipeB.getSize(); i++) {
+			// equipeB.getCombattant(i).afficherHP();
+			// ;
+			// }
+		}
 
 		if (equipeA.getNbCombattantVivant() > 0) {
 			informationsCombat.addElement("L'équipe A a gagné.");

@@ -395,22 +395,12 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		Node nodeDepart = graph.getNode(attaquant.getPosition().getX(),
 				attaquant.getPosition().getY());
 
-		System.out.println(attaquant.getNomPersonnage() + " : "
-				+ attaquant.getPosition().toString());
-
-		System.out.println(defenseur.getNomPersonnage() + " : "
-				+ defenseur.getPosition().toString());
-
 		while (!defenseurAttaque) {
-			System.out.println("while");
 
 			Dijkstra d = new Dijkstra(graph, attaquant.getPosition(),
 					defenseur.getPosition(), null);
 
 			cheminPlusCourt = d.cheminPlusCourtOptimiser();
-
-			System.out.println("cheminPlusCourt.size() = "
-					+ cheminPlusCourt.size());
 
 			if (cheminPlusCourt.size() > 1) {
 
@@ -420,7 +410,51 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 					e.printStackTrace();
 				}
 
-				System.out.println(cheminPlusCourt.get(0).toString());
+				// Placer graphiquement le pirate
+				graph.getNode(cheminPlusCourt.get(0).getX(),
+						cheminPlusCourt.get(0).getY()).setId(" ");
+				graph.getNode(cheminPlusCourt.get(1).getX(),
+						cheminPlusCourt.get(1).getY()).setId(
+						attaquant.getPosition().getIdOrigine());
+
+				if (cheminPlusCourt.get(2).getIdOrigine()
+						.equals(defenseur.getPosition().getIdOrigine()))
+					defenseurAttaque = true;
+
+				// Changer la postion du combattant
+				attaquant.setPosition(cheminPlusCourt.get(1));
+				attaquant.getPosition().setId(idOrigineAttaquant);
+
+				// Actualiser la map
+				this.actualiserMap();
+				this.repaintFrame();
+
+			}
+
+		}
+
+		try {
+			informationsCombat.addElement(attaquant.getNomPersonnage()
+					+ " attaque " + defenseur.getNomPersonnage());
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		while (!nodeDepart.equals(attaquant.getPosition())) {
+
+			Dijkstra d = new Dijkstra(graph, attaquant.getPosition(),
+					nodeDepart, null);
+
+			cheminPlusCourt = d.cheminPlusCourtOptimiser();
+
+			if (cheminPlusCourt.size() > 1) {
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 
 				// Placer graphiquement le pirate
 				graph.getNode(cheminPlusCourt.get(0).getX(),
@@ -437,9 +471,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				this.actualiserMap();
 				this.repaintFrame();
 
-			} else {
-				System.out.println("ARRIVEE !!!!");
-				defenseurAttaque = true;
 			}
 
 		}

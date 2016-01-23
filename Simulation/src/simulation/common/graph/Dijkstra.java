@@ -76,6 +76,7 @@ public class Dijkstra {
 						|| nodeFils.getId().equals("D")
 						|| (nodeFils.getId().equals("X") && distanceActuel < 2)
 						|| (nodeFils.getId().equals("Y") && distanceActuel < 2)
+						|| (nodeFils.getId().equals("M") && distanceActuel < 2)
 						|| nodeInterdit) {
 				} else {
 					if (distanceActuel < nodeFils.getMinDistance()) {

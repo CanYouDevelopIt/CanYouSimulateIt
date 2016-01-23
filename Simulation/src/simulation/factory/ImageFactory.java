@@ -27,6 +27,8 @@ public class ImageFactory {
 			return new JLabel(new ImageIcon(Images.shonen));
 		} else if (imageId.equals("Y")) {
 			return new JLabel(new ImageIcon(Images.shonen));
+		} else if (imageId.equals("M")) {
+			return new JLabel(new ImageIcon(Images.shonenMort));
 		} else if (imageId.equals("S")) {
 			if (imageIdOrigine.equals("G")) {
 				return new JLabel(new ImageIcon(Images.pirateAlgue));

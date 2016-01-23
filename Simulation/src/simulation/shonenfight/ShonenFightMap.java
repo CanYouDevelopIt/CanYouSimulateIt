@@ -427,10 +427,12 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 			attaquant.AttaqueCombattant(defenseur);
 
-			if (defenseur.getPointDeVie() < 1)
+			if (defenseur.getPointDeVie() < 1) {
+				defenseur.getPosition().setIdOrigine("M");
+				defenseur.getPosition().setId("M");
 				informationsCombat.addElement(defenseur.getNomPersonnage()
 						+ " est mort.");
-
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

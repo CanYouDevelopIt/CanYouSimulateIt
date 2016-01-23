@@ -338,17 +338,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 	public void lancerCombat() {
 
-		// System.out.println("POSITION");
-		// for (Combattant c : equipeA.getEquipe()) {
-		// System.out.println("Position de " + c.getNomPersonnage() + " : "
-		// + c.getPosition().toString());
-		// }
-		//
-		// for (Combattant c : equipeB.getEquipe()) {
-		// System.out.println("Position de " + c.getNomPersonnage() + " : "
-		// + c.getPosition().toString());
-		// }
-
 		informationsCombat.addElement("FIGHT !!!");
 
 		while (equipeX.getNbCombattantVivant() > 0
@@ -360,16 +349,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				lancerAttaque(equipeY, equipeX);
 			}
 
-			// System.out.println("----------A------------");
-			// for (int i = 0; i < equipeA.getSize(); i++) {
-			// equipeA.getCombattant(i).afficherHP();
-			// ;
-			// }
-			// System.out.println("----------B------------");
-			// for (int i = 0; i < equipeB.getSize(); i++) {
-			// equipeB.getCombattant(i).afficherHP();
-			// ;
-			// }
 		}
 
 		if (equipeX.getNbCombattantVivant() > 0) {

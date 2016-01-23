@@ -249,12 +249,16 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 						if (tab2[i].equals("X")) {
 							equipeA.getCombattant(combattantEquipeA)
 									.setPosition(nodes[cptligne][i - 1]);
+							equipeA.getCombattant(combattantEquipeA)
+									.getPosition().setIdOrigine("X");
 							combattantEquipeA++;
 						}
 
 						if (tab2[i].equals("Y")) {
 							equipeB.getCombattant(combattantEquipeB)
 									.setPosition(nodes[cptligne][i - 1]);
+							equipeB.getCombattant(combattantEquipeB)
+									.getPosition().setIdOrigine("Y");
 							combattantEquipeB++;
 						}
 					}
@@ -384,6 +388,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	public void deplacerCombattant(Combattant attaquant, Combattant defenseur) {
 
 		boolean defenseurAttaque = false;
+		String idOrigineAttaquant = attaquant.getPosition().getIdOrigine();
 
 		List<Node> cheminPlusCourt = new ArrayList<Node>();
 
@@ -421,20 +426,20 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 				graph.getNode(cheminPlusCourt.get(0).getX(),
 						cheminPlusCourt.get(0).getY()).setId(" ");
 				graph.getNode(cheminPlusCourt.get(1).getX(),
-						cheminPlusCourt.get(1).getY()).setId("X");
+						cheminPlusCourt.get(1).getY()).setId(
+						attaquant.getPosition().getIdOrigine());
 
 				// Changer la postion du combattant
 				attaquant.setPosition(cheminPlusCourt.get(1));
-
-				// Si un pirate est arrivée sur un trésor de la map
-				if (attaquant.getPosition().equals(defenseur.getPosition())) {
-					System.out.println("ARRIVEE !!!!");
-					defenseurAttaque = true;
-				}
+				attaquant.getPosition().setId(idOrigineAttaquant);
 
 				// Actualiser la map
 				this.actualiserMap();
 				this.repaintFrame();
+
+			} else {
+				System.out.println("ARRIVEE !!!!");
+				defenseurAttaque = true;
 			}
 
 		}

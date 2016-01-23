@@ -156,11 +156,9 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 			if (!equipeX.contientCombattant(p)) {
 				equipeX.ajouterCombattant(p);
-				System.out.print(p.getNomPersonnage() + "|");
 			}
 		}
-		System.out.println("");
-		System.out.println("VS");
+
 		while (equipeY.getSize() < 5) {
 			int chiffreAlea = rand.nextInt(listePersonnages.size() - 1);
 			Combattant p = (Combattant) listePersonnages.get(chiffreAlea);
@@ -168,7 +166,6 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 			if (!equipeY.contientCombattant(p)
 					&& !equipeX.contientCombattant(p)) {
 				equipeY.ajouterCombattant(p);
-				System.out.print(p.getNomPersonnage() + "|");
 			}
 		}
 

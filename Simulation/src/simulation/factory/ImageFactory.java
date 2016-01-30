@@ -1,5 +1,7 @@
 package simulation.factory;
 
+import java.io.File;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -8,8 +10,7 @@ import simulation.shonenfight.ShonenFightSimulation;
 
 public class ImageFactory {
 
-	public JLabel getImageLabel(String imageId, String imageIdOrigine,
-			String simulation) {
+	public JLabel getImageLabel(String imageId, String imageIdOrigine, String simulation) {
 
 		JLabel picLabel = new JLabel();
 
@@ -45,5 +46,14 @@ public class ImageFactory {
 			}
 		}
 		return picLabel;
+	}
+
+	public JLabel getImageCombattant(String nomPersonnage) {
+		File imageFile = new File(Images.shonenPersonnage + nomPersonnage + ".png");
+		if (imageFile.exists())
+			return new JLabel(new ImageIcon(Images.shonenPersonnage + nomPersonnage + ".png"));
+		else
+			return new JLabel(new ImageIcon(Images.shonen));
+
 	}
 }

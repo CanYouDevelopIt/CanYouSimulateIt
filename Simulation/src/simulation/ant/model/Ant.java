@@ -13,7 +13,16 @@ public class Ant extends Personnage {
 	private List<Node> nodesDejaPasses;
 	private List<Node> pommes;
 	private boolean trouve;
+	private boolean choix = false;
 	
+	public boolean isChoix() {
+		return choix;
+	}
+
+	public void setChoix(boolean choix) {
+		this.choix = choix;
+	}
+
 	public Ant(int id_, Node n, List<Node> tousLesPommes) {
 		id = id_;
 		nodeAnt = n;
@@ -23,6 +32,8 @@ public class Ant extends Personnage {
 	
 	public Ant(int id_) {
 		super("ant "+id_);
+		id = id_;
+		nodesDejaPasses = new ArrayList<Node>();
 	}
 		
 	public int getId() {

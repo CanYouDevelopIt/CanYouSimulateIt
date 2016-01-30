@@ -13,6 +13,7 @@ public class Node {
 	private int minDistance = 999999;
 	private Node nodePrecedent = null;
 	private Node nodeTrace = null;
+	private int ant = 0;
 
 	public Node(String unId, int x, int y) {
 		id = unId;
@@ -20,6 +21,14 @@ public class Node {
 		this.x = x;
 		this.y = y;
 		mesEdges = new ArrayList<Edge>();
+	}
+
+	public int getAnt() {
+		return ant;
+	}
+
+	public void setAnt(int ant) {
+		this.ant = ant;
 	}
 
 	public int getX() {

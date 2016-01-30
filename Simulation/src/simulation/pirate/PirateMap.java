@@ -136,9 +136,12 @@ public class PirateMap extends JPanel implements ActionListener {
 			for (int j = 0; j < nbcol; j++) {
 				Node node = graph.getNode(j, i);
 				if (node == null) {
-					jpNord.add(imageFactory.getImageLabel(null, null));
+					jpNord.add(imageFactory.getImageLabel(null, null,
+							mainApplicationView.getClass().getSimpleName()));
 				} else {
-					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine()));
+					jpNord.add(imageFactory.getImageLabel(node.getId(), node
+							.getIdOrigine(), mainApplicationView.getClass()
+							.getSimpleName()));
 				}
 			}
 		}
@@ -148,8 +151,10 @@ public class PirateMap extends JPanel implements ActionListener {
 		jpSud.setBackground(BG_COLOR);
 		JLabel labelTour = new JLabel("Tour: " + nbTour);
 		JLabel labelDeplacement = new JLabel("Déplacements: " + nbDeplacement);
-		JLabel labelNbPirateEnCours = new JLabel("Pirates en déplacement: " + nbPirateEnCours);
-		JLabel labelNbPirateArrive = new JLabel("Pirates arrivées: " + nbPirateArrivees);
+		JLabel labelNbPirateEnCours = new JLabel("Pirates en déplacement: "
+				+ nbPirateEnCours);
+		JLabel labelNbPirateArrive = new JLabel("Pirates arrivées: "
+				+ nbPirateArrivees);
 		buttonLancer = new JButton("Lancer");
 		buttonLoadFile = new JButton("Load File");
 		buttonLancer.addActionListener(this);
@@ -180,7 +185,9 @@ public class PirateMap extends JPanel implements ActionListener {
 				nbcol = tab.length - 1;
 			}
 		} catch (Exception e) {
-			System.out.println("Erreur lors de l'initialisation de la taille du map: " + e.getMessage());
+			System.out
+					.println("Erreur lors de l'initialisation de la taille du map: "
+							+ e.getMessage());
 		} finally {
 			ClosingTools.closeQuietly(br);
 		}
@@ -196,8 +203,10 @@ public class PirateMap extends JPanel implements ActionListener {
 			while ((ligne2 = br.readLine()) != null) {
 				String[] tab2 = ligne2.split("");
 				for (int i = 1; i < tab2.length; i++) {
-					if (tab2[i].equals(" ") || tab2[i].equals("D") || tab2[i].equals("A") || tab2[i].equals("G")) {
-						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1, cptligne);
+					if (tab2[i].equals(" ") || tab2[i].equals("D")
+							|| tab2[i].equals("A") || tab2[i].equals("G")) {
+						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1,
+								cptligne);
 					}
 				}
 				cptligne++;
@@ -286,13 +295,17 @@ public class PirateMap extends JPanel implements ActionListener {
 				List<Node> cheminPlusCourt = new ArrayList<Node>();
 				int distance = 0;
 				for (int x = 0; x < listTresors.size(); x++) {
-					Node nodeDepart = graph.getNode(personnage.getPosition().getX(), personnage.getPosition().getY());
-					Node nodeArriver = graph.getNode(listTresors.get(x).getX(), listTresors.get(x).getY());
+					Node nodeDepart = graph.getNode(personnage.getPosition()
+							.getX(), personnage.getPosition().getY());
+					Node nodeArriver = graph.getNode(listTresors.get(x).getX(),
+							listTresors.get(x).getY());
 					List<Node> nodeDejaPasser = null;
 
-					Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver, nodeDejaPasser);
+					Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver,
+							nodeDejaPasser);
 
-					List<Node> nouveauCheminCourt = d.cheminPlusCourtOptimiser();
+					List<Node> nouveauCheminCourt = d
+							.cheminPlusCourtOptimiser();
 					int nouveauCheminCourtDistance = nouveauCheminCourt.size();
 					if (distance == 0) {
 						cheminPlusCourt = nouveauCheminCourt;
@@ -318,9 +331,11 @@ public class PirateMap extends JPanel implements ActionListener {
 					}
 
 					// Placer graphiquement le pirate
-					graph.getNode(cheminPlusCourt.get(0).getX(), cheminPlusCourt.get(0).getY())
-							.setId(cheminPlusCourt.get(0).getIdOrigine());
-					graph.getNode(cheminPlusCourt.get(1).getX(), cheminPlusCourt.get(1).getY()).setId("S");
+					graph.getNode(cheminPlusCourt.get(0).getX(),
+							cheminPlusCourt.get(0).getY()).setId(
+							cheminPlusCourt.get(0).getIdOrigine());
+					graph.getNode(cheminPlusCourt.get(1).getX(),
+							cheminPlusCourt.get(1).getY()).setId("S");
 
 					// Changer la postion du pirate
 					personnage.setPosition(cheminPlusCourt.get(1));
@@ -331,8 +346,10 @@ public class PirateMap extends JPanel implements ActionListener {
 
 					// Si un pirate commence à se déplacer
 					for (int j = 0; j < listNodeDepart.size(); j++) {
-						if (cheminPlusCourt.get(0).equals(listNodeDepart.get(j))
-								&& !cheminPlusCourt.get(1).equals(listNodeDepart.get(j))) {
+						if (cheminPlusCourt.get(0)
+								.equals(listNodeDepart.get(j))
+								&& !cheminPlusCourt.get(1).equals(
+										listNodeDepart.get(j))) {
 							nbPirateEnCours++;
 						}
 					}
@@ -340,8 +357,9 @@ public class PirateMap extends JPanel implements ActionListener {
 					// Si un pirate est arrivée sur un trésor de la map
 					for (int x = 0; x < listTresors.size(); x++) {
 						if (personnage.getPosition().equals(listTresors.get(x))) {
-							graph.getNode(personnage.getPosition().getX(), personnage.getPosition().getY())
-									.setId(personnage.getPosition().getIdOrigine());
+							graph.getNode(personnage.getPosition().getX(),
+									personnage.getPosition().getY()).setId(
+									personnage.getPosition().getIdOrigine());
 
 							nbPirateArrivees++;
 							nbPirateEnCours--;
@@ -386,7 +404,8 @@ public class PirateMap extends JPanel implements ActionListener {
 
 			new Thread(new Runnable() {
 				public void run() {
-					listNbPirateSorti.add(Integer.parseInt(nbPirateSorti.getText()));
+					listNbPirateSorti.add(Integer.parseInt(nbPirateSorti
+							.getText()));
 					deplacerPirate();
 				}
 			}).start();
@@ -422,7 +441,8 @@ public class PirateMap extends JPanel implements ActionListener {
 			}
 
 			setSize(nbcol * 26, nbligne * 26 + 80);
-			mainApplicationView.setPreferredSize(new Dimension(getWidth(), getHeight() + 20));
+			mainApplicationView.setPreferredSize(new Dimension(getWidth(),
+					getHeight() + 20));
 
 			actualiserMap();
 		}

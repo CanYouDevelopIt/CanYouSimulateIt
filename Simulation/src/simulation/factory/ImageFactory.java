@@ -4,17 +4,25 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import simulation.common.Images;
+import simulation.shonenfight.ShonenFightSimulation;
 
 public class ImageFactory {
 
-	public JLabel getImageLabel(String imageId, String imageIdOrigine) {
+	public JLabel getImageLabel(String imageId, String imageIdOrigine,
+			String simulation) {
 
 		JLabel picLabel = new JLabel();
 
 		if (imageId == null) {
-			return new JLabel(new ImageIcon(Images.mur));
+			if (simulation.equals(ShonenFightSimulation.class.getSimpleName()))
+				return new JLabel(new ImageIcon(Images.shonenMur));
+			else
+				return new JLabel(new ImageIcon(Images.mur));
 		} else if (imageId.equals(" ")) {
-			return new JLabel(new ImageIcon(Images.mer));
+			if (simulation.equals(ShonenFightSimulation.class.getSimpleName()))
+				return new JLabel(new ImageIcon(Images.shonenSol));
+			else
+				return new JLabel(new ImageIcon(Images.mer));
 		} else if (imageId.equals("D")) {
 			return new JLabel(new ImageIcon(Images.ile));
 		} else if (imageId.equals("A")) {

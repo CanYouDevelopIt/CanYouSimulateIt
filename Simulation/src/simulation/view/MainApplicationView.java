@@ -8,11 +8,14 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import simulation.factory.Simulation;
+
 public class MainApplicationView extends JFrame {
 
 	private static final long serialVersionUID = 270726019658012724L;
 
 	private SimulationMenuBar simulationMenuBar;
+	private Simulation simulationEnCours;
 
 	public MainApplicationView() {
 		guiFactory();
@@ -48,4 +51,13 @@ public class MainApplicationView extends JFrame {
 	public void setSimulationMenuBar(SimulationMenuBar simulationMenuBar) {
 		this.simulationMenuBar = simulationMenuBar;
 	}
+
+	public Simulation getSimulationEnCours() {
+		return simulationEnCours;
+	}
+
+	public void setSimulationEnCours(Simulation simulationEnCours) {
+		this.simulationEnCours = simulationEnCours;
+	}
+
 }

@@ -35,7 +35,7 @@ import simulation.view.MainApplicationView;
 
 public class ShonenFightMap extends JPanel implements ActionListener {
 
-	private static final Color BG_COLOR = new Color(98, 165, 199);
+	private static final Color BG_COLOR = new Color(201, 128, 55);
 
 	private static final long serialVersionUID = 446565083035345353L;
 
@@ -98,6 +98,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 	}
 
 	public void initJpNordComponents() {
+		System.out.println();
 		jpNord.setBackground(BG_COLOR);
 		GridLayout g = new GridLayout(nbligne, nbcol);
 		jpNord.setLayout(g);
@@ -106,10 +107,14 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 			for (int j = 0; j < nbcol; j++) {
 				Node node = graph.getNode(j, i);
 				if (node == null) {
-					jpNord.add(imageFactory.getImageLabel(null, null));
+					jpNord.add(imageFactory.getImageLabel(null, null,
+							mainApplicationView.getSimulationEnCours()
+									.getClass().getSimpleName()));
 				} else {
 					jpNord.add(imageFactory.getImageLabel(node.getId(),
-							node.getIdOrigine()));
+							node.getIdOrigine(), mainApplicationView
+									.getSimulationEnCours().getClass()
+									.getSimpleName()));
 				}
 			}
 		}

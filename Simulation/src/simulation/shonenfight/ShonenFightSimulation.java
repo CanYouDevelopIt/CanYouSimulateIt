@@ -16,6 +16,7 @@ public class ShonenFightSimulation implements Simulation {
 	public void prepareSimulation(MainApplicationView mainApplicationView) {
 
 		mav = mainApplicationView;
+		mav.setSimulationEnCours(this);
 		sfm = new ShonenFightMap(mav);
 
 	}

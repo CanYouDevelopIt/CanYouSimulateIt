@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -31,9 +30,10 @@ import simulation.common.tools.ClosingTools;
 import simulation.common.tools.XmlReader;
 import simulation.etat.EtatInactif;
 import simulation.factory.ImageFactory;
+import simulation.view.JPanelSimulation;
 import simulation.view.MainApplicationView;
 
-public class ShonenFightMap extends JPanel implements ActionListener {
+public class ShonenFightMap extends JPanelSimulation {
 
 	private static final Color BG_COLOR = new Color(201, 128, 55);
 
@@ -78,12 +78,12 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 
 		loadPersonnages(); // Chargement de tous les personnages
 		creerEquipes();
-		buildPanel(); // Creation Panel
+		buildMap(); // Creation Panel
 
 		initMap();
 	}
 
-	public void buildPanel() {
+	public void buildMap() {
 
 		jpNord = new JPanel();
 		jpNord.setBackground(BG_COLOR);
@@ -143,7 +143,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		jpSud.add(jpY, BorderLayout.WEST);
 	}
 
-	private void loadPersonnages() {
+	public void loadPersonnages() {
 		File filePersonnages = new File(fichierPersonnages);
 		listePersonnages = XmlReader.getPersonnages(filePersonnages);
 	}
@@ -182,10 +182,10 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		jCombattantsY.setCellRenderer(new CombattantCellRenderer());
 	}
 
-	private void initMap() {
+	public void initMap() {
 
 		try {
-			loadFichier();
+			loadFichier(map);
 		} catch (IOException e) {
 		}
 
@@ -197,8 +197,8 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		actualiserMap();
 	}
 
-	public void loadFichier() throws IOException {
-		fichier = new File(map);
+	public void loadFichier(String f) throws IOException {
+		fichier = new File(f);
 
 		graph = new Graph();
 
@@ -225,7 +225,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		mainApplicationView.pack();
 	}
 
-	private void initTailleMap() {
+	public void initTailleMap() {
 		BufferedReader br = null;
 		try {
 			br = getBufferReader();
@@ -247,7 +247,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		nodes = new Node[nbligne][nbcol];
 	}
 
-	private void initParcellesMap() {
+	public void initParcellesMap() {
 		BufferedReader br = null;
 
 		int combattantEquipeA = 0;
@@ -293,7 +293,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		}
 	}
 
-	private void initDistanceEntreParcelle() {
+	public void initDistanceEntreParcelle() {
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
 				if (nodes[i][j] != null) {
@@ -312,7 +312,7 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		}
 	}
 
-	private BufferedReader getBufferReader() throws Exception {
+	public BufferedReader getBufferReader() throws Exception {
 		BufferedReader br;
 		String map = XmlReader.getMap(fichier);
 		InputStream is = new ByteArrayInputStream(map.getBytes());
@@ -477,4 +477,5 @@ public class ShonenFightMap extends JPanel implements ActionListener {
 		}
 
 	}
+
 }

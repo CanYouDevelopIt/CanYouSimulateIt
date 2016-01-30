@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -31,9 +30,10 @@ import simulation.common.graph.Node;
 import simulation.common.tools.ClosingTools;
 import simulation.common.tools.XmlReader;
 import simulation.factory.ImageFactory;
+import simulation.view.JPanelSimulation;
 import simulation.view.MainApplicationView;
 
-public class AntMap extends JPanel implements ActionListener {
+public class AntMap extends JPanelSimulation {
 
 	private static final long serialVersionUID = 224516038879363496L;
 
@@ -134,9 +134,12 @@ public class AntMap extends JPanel implements ActionListener {
 			for (int j = 0; j < nbcol; j++) {
 				Node node = graph.getNode(j, i);
 				if (node == null) {
-					jpNord.add(imageFactory.getImageLabel(null, null, mainApplicationView.getClass().getSimpleName()));
+					jpNord.add(imageFactory.getImageLabel(null, null,
+							mainApplicationView.getClass().getSimpleName()));
 				} else {
-					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine(), mainApplicationView.getClass().getSimpleName()));
+					jpNord.add(imageFactory.getImageLabel(node.getId(), node
+							.getIdOrigine(), mainApplicationView.getClass()
+							.getSimpleName()));
 				}
 			}
 		}
@@ -166,7 +169,7 @@ public class AntMap extends JPanel implements ActionListener {
 		jpSud.add(buttonLancer);
 	}
 
-	private void initTailleMap() {
+	public void initTailleMap() {
 		BufferedReader br = null;
 		try {
 			br = getBufferReader();
@@ -180,15 +183,15 @@ public class AntMap extends JPanel implements ActionListener {
 			}
 		} catch (Exception e) {
 			System.out
-			.println("Erreur lors de l'initialisation de la taille du map: "
-					+ e.getMessage());
+					.println("Erreur lors de l'initialisation de la taille du map: "
+							+ e.getMessage());
 		} finally {
 			ClosingTools.closeQuietly(br);
 		}
 		nodes = new Node[nbligne][nbcol];
 	}
 
-	private void initParcellesMap() {
+	public void initParcellesMap() {
 		BufferedReader br = null;
 		try {
 			br = getBufferReader();
@@ -212,7 +215,7 @@ public class AntMap extends JPanel implements ActionListener {
 		}
 	}
 
-	private BufferedReader getBufferReader() throws Exception {
+	public BufferedReader getBufferReader() throws Exception {
 		BufferedReader br;
 		String map = XmlReader.getMap(fichier);
 		InputStream is = new ByteArrayInputStream(map.getBytes());
@@ -220,7 +223,7 @@ public class AntMap extends JPanel implements ActionListener {
 		return br;
 	}
 
-	private void initDistanceEntreParcelle() {
+	public void initDistanceEntreParcelle() {
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
 				if (nodes[i][j] != null) {
@@ -281,14 +284,20 @@ public class AntMap extends JPanel implements ActionListener {
 				// tresors
 				Ant ant = listeAnt.get(i);
 				List<Node> cheminPlusCourt = new ArrayList<Node>();
-				if(!ant.isTrouve()) {
-					if(!ant.isChoix()) {
+				if (!ant.isTrouve()) {
+					if (!ant.isChoix()) {
 						for (int x = 0; x < listPommes.size(); x++) {
-							if((listPommes.get(x).getAnt() == ant.getId() || listPommes.get(x).getAnt() == 0) && !ant.isChoix()) {
-								Node nodeDepart = graph.getNode(ant.getPosition().getX(), ant.getPosition().getY());
-								Node nodeArriver = graph.getNode(listPommes.get(x).getX(), listPommes.get(x).getY());
+							if ((listPommes.get(x).getAnt() == ant.getId() || listPommes
+									.get(x).getAnt() == 0) && !ant.isChoix()) {
+								Node nodeDepart = graph.getNode(ant
+										.getPosition().getX(), ant
+										.getPosition().getY());
+								Node nodeArriver = graph.getNode(listPommes
+										.get(x).getX(), listPommes.get(x)
+										.getY());
 
-								Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver, null);
+								Dijkstra d = new Dijkstra(graph, nodeDepart,
+										nodeArriver, null);
 
 								cheminPlusCourt = d.cheminPlusCourtOptimiser();
 								listPommes.get(x).setAnt(ant.getId());
@@ -297,11 +306,16 @@ public class AntMap extends JPanel implements ActionListener {
 						}
 					} else {
 						for (int x = 0; x < listPommes.size(); x++) {
-							if(listPommes.get(x).getAnt() == ant.getId()) {
-								Node nodeDepart = graph.getNode(ant.getPosition().getX(), ant.getPosition().getY());
-								Node nodeArriver = graph.getNode(listPommes.get(x).getX(), listPommes.get(x).getY());
+							if (listPommes.get(x).getAnt() == ant.getId()) {
+								Node nodeDepart = graph.getNode(ant
+										.getPosition().getX(), ant
+										.getPosition().getY());
+								Node nodeArriver = graph.getNode(listPommes
+										.get(x).getX(), listPommes.get(x)
+										.getY());
 
-								Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver, null);
+								Dijkstra d = new Dijkstra(graph, nodeDepart,
+										nodeArriver, null);
 
 								cheminPlusCourt = d.cheminPlusCourtOptimiser();
 							}
@@ -309,10 +323,13 @@ public class AntMap extends JPanel implements ActionListener {
 					}
 				} else {
 					System.out.println("else");
-					Node nodeDepart = graph.getNode(ant.getPosition().getX(), ant.getPosition().getY());
-					Node nodeArriver = graph.getNode(listNodeDepart.get(0).getX(), listNodeDepart.get(0).getY());
+					Node nodeDepart = graph.getNode(ant.getPosition().getX(),
+							ant.getPosition().getY());
+					Node nodeArriver = graph.getNode(listNodeDepart.get(0)
+							.getX(), listNodeDepart.get(0).getY());
 
-					Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver, null);
+					Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver,
+							null);
 
 					cheminPlusCourt = d.cheminRetourOptimiser();
 				}
@@ -332,7 +349,7 @@ public class AntMap extends JPanel implements ActionListener {
 					// Placer graphiquement le pirate
 					graph.getNode(cheminPlusCourt.get(0).getX(),
 							cheminPlusCourt.get(0).getY()).setId(
-									cheminPlusCourt.get(0).getIdOrigine());
+							cheminPlusCourt.get(0).getIdOrigine());
 					graph.getNode(cheminPlusCourt.get(1).getX(),
 							cheminPlusCourt.get(1).getY()).setId("S");
 
@@ -357,20 +374,27 @@ public class AntMap extends JPanel implements ActionListener {
 						// Si un pirate est arrivée sur un trésor de la map
 						for (int x = 0; x < listPommes.size(); x++) {
 							if (ant.getPosition().equals(listPommes.get(x))) {
-								//graph.getNode(listPommes.get(x).getX(), listPommes.get(x).getY()).setId(" ");
-								graph.getNode(listPommes.get(x).getX(), listPommes.get(x).getY()).setIdOrigine(" ");
+								// graph.getNode(listPommes.get(x).getX(),
+								// listPommes.get(x).getY()).setId(" ");
+								graph.getNode(listPommes.get(x).getX(),
+										listPommes.get(x).getY()).setIdOrigine(
+										" ");
 								listPommes.remove(x);
 
 								ant.setTrouve(true);
-								//retourAnt(ant);
+								// retourAnt(ant);
 
 							}
 						}
 					} else {
 						System.out.println("LAAAAAAAAAAAAAA");
-						if (ant.getPosition().equals(graph.getNode(listNodeDepart.get(0).getX(), listNodeDepart.get(0).getY()))){
+						if (ant.getPosition().equals(
+								graph.getNode(listNodeDepart.get(0).getX(),
+										listNodeDepart.get(0).getY()))) {
 							System.out.println("LAAAAAAAAAAAAAA");
-							graph.getNode(ant.getPosition().getX(), ant.getPosition().getY()).setId(ant.getPosition().getIdOrigine());
+							graph.getNode(ant.getPosition().getX(),
+									ant.getPosition().getY()).setId(
+									ant.getPosition().getIdOrigine());
 							nbAntArrivees++;
 							nbAntEnCours--;
 						}
@@ -396,7 +420,6 @@ public class AntMap extends JPanel implements ActionListener {
 
 	}
 
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(buttonLancer)) {
@@ -423,7 +446,7 @@ public class AntMap extends JPanel implements ActionListener {
 		}
 	}
 
-	private void initMap() {
+	public void initMap() {
 
 		listNbAntSorti.clear();
 		listNodeDepart.clear();

@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -33,9 +32,10 @@ import simulation.common.tools.ClosingTools;
 import simulation.common.tools.XmlReader;
 import simulation.factory.ImageFactory;
 import simulation.pirate.model.Pirate;
+import simulation.view.JPanelSimulation;
 import simulation.view.MainApplicationView;
 
-public class PirateMap extends JPanel implements ActionListener {
+public class PirateMap extends JPanelSimulation {
 
 	private static final Color BG_COLOR = new Color(98, 165, 199);
 
@@ -172,7 +172,7 @@ public class PirateMap extends JPanel implements ActionListener {
 		jpSud.add(buttonLancer);
 	}
 
-	private void initTailleMap() {
+	public void initTailleMap() {
 		BufferedReader br = null;
 		try {
 			br = getBufferReader();
@@ -194,7 +194,7 @@ public class PirateMap extends JPanel implements ActionListener {
 		nodes = new Node[nbligne][nbcol];
 	}
 
-	private void initParcellesMap() {
+	public void initParcellesMap() {
 		BufferedReader br = null;
 		try {
 			br = getBufferReader();
@@ -218,7 +218,7 @@ public class PirateMap extends JPanel implements ActionListener {
 		}
 	}
 
-	private BufferedReader getBufferReader() throws Exception {
+	public BufferedReader getBufferReader() throws Exception {
 		BufferedReader br;
 		String map = XmlReader.getMap(fichier);
 		InputStream is = new ByteArrayInputStream(map.getBytes());
@@ -226,7 +226,7 @@ public class PirateMap extends JPanel implements ActionListener {
 		return br;
 	}
 
-	private void initDistanceEntreParcelle() {
+	public void initDistanceEntreParcelle() {
 		for (int i = 0; i < nodes.length; i++) {
 			for (int j = 0; j < nodes[i].length; j++) {
 				if (nodes[i][j] != null) {
@@ -416,7 +416,7 @@ public class PirateMap extends JPanel implements ActionListener {
 		}
 	}
 
-	private void initMap() {
+	public void initMap() {
 
 		listNbPirateSorti.clear();
 		listNodeDepart.clear();

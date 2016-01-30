@@ -56,7 +56,6 @@ public class Combattant extends Personnage {
 		if (adversaire.getPointDeVie() < 1) {
 			EtatInactif etat = new EtatInactif();
 			etat.changerEtat(adversaire);
-			System.out.println(adversaire.getNomPersonnage() + " est KO.");
 		}
 	}
 

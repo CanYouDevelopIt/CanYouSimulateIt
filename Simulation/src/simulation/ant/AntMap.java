@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import simulation.RunningSimulation;
 import simulation.ant.model.Ant;
 import simulation.common.graph.Dijkstra;
 import simulation.common.graph.Edge;
@@ -36,7 +37,7 @@ public class AntMap extends JPanelSimulation {
 
 	private static final long serialVersionUID = 224516038879363496L;
 
-	private static final Color BG_COLOR = new Color(98, 165, 199);
+	private static final Color BG_COLOR = new Color(134, 191, 130);
 
 	MainApplicationView mainApplicationView;
 
@@ -136,7 +137,8 @@ public class AntMap extends JPanelSimulation {
 					jpNord.add(imageFactory.getImageLabel(null, null,
 							mainApplicationView.getSimulationEnCours().getClass().getSimpleName()));
 				} else {
-					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine(), mainApplicationView.getSimulationEnCours().getClass().getSimpleName()));
+					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine(),
+							mainApplicationView.getSimulationEnCours().getClass().getSimpleName()));
 				}
 			}
 		}
@@ -144,7 +146,7 @@ public class AntMap extends JPanelSimulation {
 
 	public void initJpSudComponents() {
 		jpSud.setBackground(BG_COLOR);
-		
+
 		buttonLancer = new JButton("Lancer");
 		buttonLoadFile = new JButton("Load File");
 		buttonLancer.addActionListener(this);
@@ -168,9 +170,7 @@ public class AntMap extends JPanelSimulation {
 				nbcol = tab.length - 1;
 			}
 		} catch (Exception e) {
-			System.out
-			.println("Erreur lors de l'initialisation de la taille du map: "
-					+ e.getMessage());
+			System.out.println("Erreur lors de l'initialisation de la taille du map: " + e.getMessage());
 		} finally {
 			ClosingTools.closeQuietly(br);
 		}
@@ -243,6 +243,10 @@ public class AntMap extends JPanelSimulation {
 
 	public void deplacerAnt() {
 
+		// Démarrage de la simulation
+		RunningSimulation.startSimulation();
+		// -- -- -- -- -- -- -- -- -- -- --
+
 		List<Ant> listeAnt = new ArrayList<Ant>();
 		for (int i = 0; i < listNbAntSorti.size(); i++) {
 			for (int j = 0; j < listNbAntSorti.get(i); j++) {
@@ -264,11 +268,12 @@ public class AntMap extends JPanelSimulation {
 				if (!ant.isTrouve()) {
 					if (!ant.isChoix()) {
 						for (int x = 0; x < listObjets.size(); x++) {
-							if ((listObjets.get(x).getAnt() == ant.getId() || listObjets.get(x).getAnt() == 0) && !ant.isChoix()) {
+							if ((listObjets.get(x).getAnt() == ant.getId() || listObjets.get(x).getAnt() == 0)
+									&& !ant.isChoix()) {
 								Node nodeDepart = graph.getNode(ant.getPosition().getX(), ant.getPosition().getY());
 								Node nodeArriver = graph.getNode(listObjets.get(x).getX(), listObjets.get(x).getY());
 
-								Dijkstra d = new Dijkstra(graph, nodeDepart,nodeArriver, null);
+								Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver, null);
 
 								cheminPlusCourt = d.cheminPlusCourtOptimiser();
 								listObjets.get(x).setAnt(ant.getId());
@@ -307,7 +312,8 @@ public class AntMap extends JPanelSimulation {
 					}
 
 					// Placer graphiquement le pirate
-					graph.getNode(cheminPlusCourt.get(0).getX(), cheminPlusCourt.get(0).getY()).setId(cheminPlusCourt.get(0).getIdOrigine());
+					graph.getNode(cheminPlusCourt.get(0).getX(), cheminPlusCourt.get(0).getY())
+							.setId(cheminPlusCourt.get(0).getIdOrigine());
 					graph.getNode(cheminPlusCourt.get(1).getX(), cheminPlusCourt.get(1).getY()).setId("S");
 
 					// Changer la postion du pirate
@@ -319,7 +325,8 @@ public class AntMap extends JPanelSimulation {
 
 					// Si un pirate commence à se déplacer
 					for (int j = 0; j < listNodeDepart.size(); j++) {
-						if (cheminPlusCourt.get(0).equals(listNodeDepart.get(j)) && !cheminPlusCourt.get(1).equals(listNodeDepart.get(j))) {
+						if (cheminPlusCourt.get(0).equals(listNodeDepart.get(j))
+								&& !cheminPlusCourt.get(1).equals(listNodeDepart.get(j))) {
 							nbAntEnCours++;
 						}
 					}
@@ -329,7 +336,7 @@ public class AntMap extends JPanelSimulation {
 						for (int x = 0; x < listObjets.size(); x++) {
 							if (ant.getPosition().equals(listObjets.get(x))) {
 								listObjets.get(x).setNb(listObjets.get(x).getNb() - 1);
-								if(listObjets.get(x).getNb() == 0) {
+								if (listObjets.get(x).getNb() == 0) {
 									graph.getNode(listObjets.get(x).getX(), listObjets.get(x).getY()).setIdOrigine(" ");
 									listObjets.remove(x);
 								}
@@ -337,10 +344,12 @@ public class AntMap extends JPanelSimulation {
 							}
 						}
 					} else {
-						if (ant.getPosition().equals(graph.getNode(listNodeDepart.get(0).getX(),listNodeDepart.get(0).getY()))) {
+						if (ant.getPosition()
+								.equals(graph.getNode(listNodeDepart.get(0).getX(), listNodeDepart.get(0).getY()))) {
 							System.out.println("ici");
-							graph.getNode(ant.getPosition().getX(), ant.getPosition().getY()).setId(ant.getPosition().getIdOrigine());
-							if(!listObjets.contains(ant.getNodeObj())){
+							graph.getNode(ant.getPosition().getX(), ant.getPosition().getY())
+									.setId(ant.getPosition().getIdOrigine());
+							if (!listObjets.contains(ant.getNodeObj())) {
 								nbAntArrivees++;
 								nbAntEnCours--;
 							} else {
@@ -367,6 +376,9 @@ public class AntMap extends JPanelSimulation {
 		buttonLancer.setEnabled(isNotDisabled);
 		buttonLoadFile.setEnabled(isNotDisabled);
 
+		// Arret de la simulation
+		RunningSimulation.stopSimulation();
+		// -- -- -- -- -- -- -- -- -- -- --
 	}
 
 	@Override

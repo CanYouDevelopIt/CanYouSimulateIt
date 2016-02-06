@@ -9,6 +9,7 @@ public class PirateSimulation implements Simulation {
 
 	public void prepareSimulation(MainApplicationView mainApplicationView) {
 		mav = mainApplicationView;
+		mav.setSimulationEnCours(this);
 		pm = new PirateMap(mav);
 	}
 

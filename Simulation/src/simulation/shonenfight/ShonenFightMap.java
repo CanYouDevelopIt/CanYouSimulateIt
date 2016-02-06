@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import simulation.Personnage;
+import simulation.RunningSimulation;
 import simulation.common.graph.Dijkstra;
 import simulation.common.graph.Edge;
 import simulation.common.graph.Graph;
@@ -346,7 +347,9 @@ public class ShonenFightMap extends JPanelSimulation {
 	public void lancerCombat() {
 
 		informationsCombat.addElement("FIGHT !!!");
-
+		// Démarrage de la simulation
+		RunningSimulation.startSimulation();
+		// -- -- -- -- -- -- -- -- -- -- --
 		while (equipeX.getNbCombattantVivant() > 0 && equipeY.getNbCombattantVivant() > 0) {
 
 			lancerAttaque(equipeX, equipeY);
@@ -362,6 +365,10 @@ public class ShonenFightMap extends JPanelSimulation {
 		} else {
 			informationsCombat.addElement("L'équipe B a gagné.");
 		}
+
+		// Arret de la simulation
+		RunningSimulation.stopSimulation();
+		// -- -- -- -- -- -- -- -- -- -- --
 
 	}
 
@@ -396,7 +403,7 @@ public class ShonenFightMap extends JPanelSimulation {
 			if (cheminPlusCourt.size() > 1) {
 
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(300);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -424,7 +431,7 @@ public class ShonenFightMap extends JPanelSimulation {
 		try {
 			informationsCombat.addElement(attaquant.getNomPersonnage() + " attaque " + defenseur.getNomPersonnage());
 
-			Thread.sleep(2000);
+			Thread.sleep(500);
 
 			attaquant.AttaqueCombattant(defenseur);
 

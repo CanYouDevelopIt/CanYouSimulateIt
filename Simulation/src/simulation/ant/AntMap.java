@@ -17,7 +17,6 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -135,11 +134,9 @@ public class AntMap extends JPanelSimulation {
 				Node node = graph.getNode(j, i);
 				if (node == null) {
 					jpNord.add(imageFactory.getImageLabel(null, null,
-							mainApplicationView.getClass().getSimpleName()));
+							mainApplicationView.getSimulationEnCours().getClass().getSimpleName()));
 				} else {
-					jpNord.add(imageFactory.getImageLabel(node.getId(), node
-							.getIdOrigine(), mainApplicationView.getClass()
-							.getSimpleName()));
+					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine(), mainApplicationView.getSimulationEnCours().getClass().getSimpleName()));
 				}
 			}
 		}

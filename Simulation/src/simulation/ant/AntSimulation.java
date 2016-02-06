@@ -9,6 +9,7 @@ public class AntSimulation implements Simulation {
 
 	public void prepareSimulation(MainApplicationView mainApplicationView) {
 		mav = mainApplicationView;
+		mav.setSimulationEnCours(this);
 		am = new AntMap(mav);
 	}
 

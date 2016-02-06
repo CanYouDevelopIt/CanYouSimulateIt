@@ -56,7 +56,7 @@ public class AntMap extends JPanelSimulation {
 
 	private List<Integer> listNbAntSorti = new ArrayList<Integer>();
 	private List<Node> listNodeDepart = new ArrayList<Node>();
-	private List<Node> listPommes = new ArrayList<Node>();
+	private List<Node> listObjets = new ArrayList<Node>();
 
 	private int nbTour = 0;
 	private int nbDeplacement = 0;
@@ -79,7 +79,7 @@ public class AntMap extends JPanelSimulation {
 			initTailleMap();
 			initParcellesMap();
 			initDistanceEntreParcelle();
-			nbAntSorti.setText(Integer.toString(listPommes.size()));
+			nbAntSorti.setText(Integer.toString(listObjets.size()));
 		}
 	}
 
@@ -147,24 +147,13 @@ public class AntMap extends JPanelSimulation {
 
 	public void initJpSudComponents() {
 		jpSud.setBackground(BG_COLOR);
-		JLabel labelTour = new JLabel("Tour: " + nbTour);
-		JLabel labelDeplacement = new JLabel("Déplacements: " + nbDeplacement);
-		JLabel labelNbAntEnCours = new JLabel("Ant en déplacement: "
-				+ nbAntEnCours);
-		JLabel labelNbAntArrive = new JLabel("Ant arrivées: " + nbAntArrivees);
+		
 		buttonLancer = new JButton("Lancer");
 		buttonLoadFile = new JButton("Load File");
 		buttonLancer.addActionListener(this);
 		buttonLoadFile.addActionListener(this);
 
 		jpSud.add(buttonLoadFile);
-		jpSud.add(labelTour);
-		jpSud.add(labelDeplacement);
-		jpSud.add(labelNbAntEnCours);
-		jpSud.add(labelNbAntArrive);
-		JLabel labelPorte = new JLabel("Nombre de fourmis: ");
-		jpSud.add(labelPorte);
-		jpSud.add(nbAntSorti);
 
 		jpSud.add(buttonLancer);
 	}
@@ -183,8 +172,8 @@ public class AntMap extends JPanelSimulation {
 			}
 		} catch (Exception e) {
 			System.out
-					.println("Erreur lors de l'initialisation de la taille du map: "
-							+ e.getMessage());
+			.println("Erreur lors de l'initialisation de la taille du map: "
+					+ e.getMessage());
 		} finally {
 			ClosingTools.closeQuietly(br);
 		}
@@ -200,10 +189,12 @@ public class AntMap extends JPanelSimulation {
 			while ((ligne2 = br.readLine()) != null) {
 				String[] tab2 = ligne2.split("");
 				for (int i = 1; i < tab2.length; i++) {
-					if (tab2[i].equals(" ") || tab2[i].equals("D")
-							|| tab2[i].equals("A") || tab2[i].equals("G")) {
-						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1,
-								cptligne);
+					if (tab2[i].equals(" ") || tab2[i].equals("D")) {
+						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1, cptligne);
+					} else if (tab2[i].equals("B")) {
+						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1, cptligne, 2);
+					} else if (tab2[i].equals("P")) {
+						nodes[cptligne][i - 1] = new Node(tab2[i], i - 1, cptligne, 3);
 					}
 				}
 				cptligne++;
@@ -231,25 +222,16 @@ public class AntMap extends JPanelSimulation {
 
 					if (nodes[i][j].getId().equals("D")) {
 						listNodeDepart.add(nodes[i][j]);
-					} else if (nodes[i][j].getId().equals("A")) {
-						listPommes.add(nodes[i][j]);
+					} else if (nodes[i][j].getId().equals("B") || nodes[i][j].getId().equals("P")) {
+						listObjets.add(nodes[i][j]);
 					}
 
-					if (nodes[i][j].getId().equals("G")) {
-						if (nodes[i][j + 1] != null) {
-							new Edge(nodes[i][j], nodes[i][j + 1], 2);
-						}
-						if (nodes[i + 1][j] != null) {
-							new Edge(nodes[i][j], nodes[i + 1][j], 2);
-						}
-					} else {
-						nodes[i][j].setMinDistance(1);
-						if (nodes[i][j + 1] != null) {
-							new Edge(nodes[i][j], nodes[i][j + 1], 1);
-						}
-						if (nodes[i + 1][j] != null) {
-							new Edge(nodes[i][j], nodes[i + 1][j], 1);
-						}
+					nodes[i][j].setMinDistance(1);
+					if (nodes[i][j + 1] != null) {
+						new Edge(nodes[i][j], nodes[i][j + 1], 1);
+					}
+					if (nodes[i + 1][j] != null) {
+						new Edge(nodes[i][j], nodes[i + 1][j], 1);
 					}
 
 				}
@@ -277,45 +259,33 @@ public class AntMap extends JPanelSimulation {
 
 		System.out.println("Nb ant envoyees : " + nbAntSorties);
 		while (nbAntSorties != nbAntArrivees) {
-			System.out.println("while");
 			for (int i = 0; i < listeAnt.size(); i++) {
 
 				// Recherche du chemin le plus court vers un ou plusieurs
-				// tresors
 				Ant ant = listeAnt.get(i);
 				List<Node> cheminPlusCourt = new ArrayList<Node>();
 				if (!ant.isTrouve()) {
 					if (!ant.isChoix()) {
-						for (int x = 0; x < listPommes.size(); x++) {
-							if ((listPommes.get(x).getAnt() == ant.getId() || listPommes
-									.get(x).getAnt() == 0) && !ant.isChoix()) {
-								Node nodeDepart = graph.getNode(ant
-										.getPosition().getX(), ant
-										.getPosition().getY());
-								Node nodeArriver = graph.getNode(listPommes
-										.get(x).getX(), listPommes.get(x)
-										.getY());
+						for (int x = 0; x < listObjets.size(); x++) {
+							if ((listObjets.get(x).getAnt() == ant.getId() || listObjets.get(x).getAnt() == 0) && !ant.isChoix()) {
+								Node nodeDepart = graph.getNode(ant.getPosition().getX(), ant.getPosition().getY());
+								Node nodeArriver = graph.getNode(listObjets.get(x).getX(), listObjets.get(x).getY());
 
-								Dijkstra d = new Dijkstra(graph, nodeDepart,
-										nodeArriver, null);
+								Dijkstra d = new Dijkstra(graph, nodeDepart,nodeArriver, null);
 
 								cheminPlusCourt = d.cheminPlusCourtOptimiser();
-								listPommes.get(x).setAnt(ant.getId());
+								listObjets.get(x).setAnt(ant.getId());
 								ant.setChoix(true);
+								ant.setNodeObj(listObjets.get(x));
 							}
 						}
 					} else {
-						for (int x = 0; x < listPommes.size(); x++) {
-							if (listPommes.get(x).getAnt() == ant.getId()) {
-								Node nodeDepart = graph.getNode(ant
-										.getPosition().getX(), ant
-										.getPosition().getY());
-								Node nodeArriver = graph.getNode(listPommes
-										.get(x).getX(), listPommes.get(x)
-										.getY());
+						for (int x = 0; x < listObjets.size(); x++) {
+							if (listObjets.get(x).getAnt() == ant.getId()) {
+								Node nodeDepart = graph.getNode(ant.getPosition().getX(), ant.getPosition().getY());
+								Node nodeArriver = graph.getNode(listObjets.get(x).getX(), listObjets.get(x).getY());
 
-								Dijkstra d = new Dijkstra(graph, nodeDepart,
-										nodeArriver, null);
+								Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver, null);
 
 								cheminPlusCourt = d.cheminPlusCourtOptimiser();
 							}
@@ -323,13 +293,10 @@ public class AntMap extends JPanelSimulation {
 					}
 				} else {
 					System.out.println("else");
-					Node nodeDepart = graph.getNode(ant.getPosition().getX(),
-							ant.getPosition().getY());
-					Node nodeArriver = graph.getNode(listNodeDepart.get(0)
-							.getX(), listNodeDepart.get(0).getY());
+					Node nodeDepart = graph.getNode(ant.getPosition().getX(), ant.getPosition().getY());
+					Node nodeArriver = graph.getNode(listNodeDepart.get(0).getX(), listNodeDepart.get(0).getY());
 
-					Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver,
-							null);
+					Dijkstra d = new Dijkstra(graph, nodeDepart, nodeArriver, null);
 
 					cheminPlusCourt = d.cheminRetourOptimiser();
 				}
@@ -337,21 +304,14 @@ public class AntMap extends JPanelSimulation {
 				if (cheminPlusCourt.size() > 1) {
 
 					try {
-						if (cheminPlusCourt.get(0).getIdOrigine().equals("G")) {
-							Thread.sleep(vitesseDeplacement * 2);
-						} else {
-							Thread.sleep(vitesseDeplacement);
-						}
+						Thread.sleep(vitesseDeplacement);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 
 					// Placer graphiquement le pirate
-					graph.getNode(cheminPlusCourt.get(0).getX(),
-							cheminPlusCourt.get(0).getY()).setId(
-							cheminPlusCourt.get(0).getIdOrigine());
-					graph.getNode(cheminPlusCourt.get(1).getX(),
-							cheminPlusCourt.get(1).getY()).setId("S");
+					graph.getNode(cheminPlusCourt.get(0).getX(), cheminPlusCourt.get(0).getY()).setId(cheminPlusCourt.get(0).getIdOrigine());
+					graph.getNode(cheminPlusCourt.get(1).getX(), cheminPlusCourt.get(1).getY()).setId("S");
 
 					// Changer la postion du pirate
 					ant.setPosition(cheminPlusCourt.get(1));
@@ -362,41 +322,33 @@ public class AntMap extends JPanelSimulation {
 
 					// Si un pirate commence à se déplacer
 					for (int j = 0; j < listNodeDepart.size(); j++) {
-						if (cheminPlusCourt.get(0)
-								.equals(listNodeDepart.get(j))
-								&& !cheminPlusCourt.get(1).equals(
-										listNodeDepart.get(j))) {
+						if (cheminPlusCourt.get(0).equals(listNodeDepart.get(j)) && !cheminPlusCourt.get(1).equals(listNodeDepart.get(j))) {
 							nbAntEnCours++;
 						}
 					}
 
 					if (!ant.isTrouve()) {
 						// Si un pirate est arrivée sur un trésor de la map
-						for (int x = 0; x < listPommes.size(); x++) {
-							if (ant.getPosition().equals(listPommes.get(x))) {
-								// graph.getNode(listPommes.get(x).getX(),
-								// listPommes.get(x).getY()).setId(" ");
-								graph.getNode(listPommes.get(x).getX(),
-										listPommes.get(x).getY()).setIdOrigine(
-										" ");
-								listPommes.remove(x);
-
+						for (int x = 0; x < listObjets.size(); x++) {
+							if (ant.getPosition().equals(listObjets.get(x))) {
+								listObjets.get(x).setNb(listObjets.get(x).getNb() - 1);
+								if(listObjets.get(x).getNb() == 0) {
+									graph.getNode(listObjets.get(x).getX(), listObjets.get(x).getY()).setIdOrigine(" ");
+									listObjets.remove(x);
+								}
 								ant.setTrouve(true);
-								// retourAnt(ant);
-
 							}
 						}
 					} else {
-						System.out.println("LAAAAAAAAAAAAAA");
-						if (ant.getPosition().equals(
-								graph.getNode(listNodeDepart.get(0).getX(),
-										listNodeDepart.get(0).getY()))) {
-							System.out.println("LAAAAAAAAAAAAAA");
-							graph.getNode(ant.getPosition().getX(),
-									ant.getPosition().getY()).setId(
-									ant.getPosition().getIdOrigine());
-							nbAntArrivees++;
-							nbAntEnCours--;
+						if (ant.getPosition().equals(graph.getNode(listNodeDepart.get(0).getX(),listNodeDepart.get(0).getY()))) {
+							System.out.println("ici");
+							graph.getNode(ant.getPosition().getX(), ant.getPosition().getY()).setId(ant.getPosition().getIdOrigine());
+							if(!listObjets.contains(ant.getNodeObj())){
+								nbAntArrivees++;
+								nbAntEnCours--;
+							} else {
+								ant.setTrouve(false);
+							}
 						}
 					}
 
@@ -450,7 +402,7 @@ public class AntMap extends JPanelSimulation {
 
 		listNbAntSorti.clear();
 		listNodeDepart.clear();
-		listPommes.clear();
+		listObjets.clear();
 
 		nbTour = 0;
 		nbDeplacement = 0;
@@ -471,8 +423,7 @@ public class AntMap extends JPanelSimulation {
 			}
 
 			setSize(nbcol * 26, nbligne * 26 + 80);
-			mainApplicationView.setPreferredSize(new Dimension(getWidth(),
-					getHeight() + 20));
+			mainApplicationView.setPreferredSize(new Dimension(getWidth(), getHeight() + 20));
 			actualiserMap();
 		}
 	}

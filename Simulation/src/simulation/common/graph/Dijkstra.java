@@ -141,7 +141,7 @@ public class Dijkstra {
 				}
 
 				if ((nodeFils.getId().equals("S") && distanceActuel < 2)
-						|| nodeFils.getId().equals("A") || nodeInterdit) {
+						|| nodeFils.getId().equals("A") || nodeFils.getId().equals("B") || nodeFils.getId().equals("P") || nodeInterdit) {
 				} else {
 					if (distanceActuel < nodeFils.getMinDistance()) {
 

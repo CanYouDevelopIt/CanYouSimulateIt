@@ -14,7 +14,16 @@ public class Ant extends Personnage {
 	private List<Node> pommes;
 	private boolean trouve;
 	private boolean choix = false;
+	private Node nodeObj;
 	
+	public Node getNodeObj() {
+		return nodeObj;
+	}
+
+	public void setNodeObj(Node nodeObj) {
+		this.nodeObj = nodeObj;
+	}
+
 	public boolean isChoix() {
 		return choix;
 	}

@@ -12,7 +12,7 @@ public class Node {
 	private List<Edge> mesEdges;
 	private int minDistance = 999999;
 	private Node nodePrecedent = null;
-	private Node nodeTrace = null;
+	private int nb;
 	private int ant = 0;
 
 	public Node(String unId, int x, int y) {
@@ -21,6 +21,24 @@ public class Node {
 		this.x = x;
 		this.y = y;
 		mesEdges = new ArrayList<Edge>();
+		nb = 0;
+	}
+	
+	public Node(String unId, int x, int y, int nb) {
+		id = unId;
+		idOrigine = unId;
+		this.x = x;
+		this.y = y;
+		mesEdges = new ArrayList<Edge>();
+		this.nb = nb;
+	}
+	
+	public int getNb() {
+		return nb;
+	}
+
+	public void setNb(int nb) {
+		this.nb = nb;
 	}
 
 	public int getAnt() {
@@ -84,15 +102,7 @@ public class Node {
 	public Node getNodePrecedent() {
 		return nodePrecedent;
 	}
-
-	public void setNodeTrace(Node nodeTrace) {
-		this.nodeTrace = nodeTrace;
-	}
 	
-	public Node getNodeTrace() {
-		return nodeTrace;
-	}
-
 	public void setNodePrecedent(Node nodePrecedent) {
 		this.nodePrecedent = nodePrecedent;
 	}

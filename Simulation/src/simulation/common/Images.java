@@ -14,4 +14,10 @@ public interface Images {
 	public static final String shonenSol = "resources/shonenfight/images/sol.png";
 	public static final String shonenMort = "resources/shonenfight/images/mort.png";
 	public static final String shonenPersonnage = "resources/shonenfight/personnages/";
+	public static final String pomme = "resources/ant/images/pomme.png";
+	public static final String banane = "resources/ant/images/banane.png";
+	public static final String ant = "resources/ant/images/ant.png";
+	public static final String anthill = "resources/ant/images/anthill.png";
+	public static final String antSol = "resources/ant/images/antSol.png";
+	public static final String buisson = "resources/ant/images/buisson.png";
 }

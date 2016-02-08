@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 
 import simulation.ant.AntSimulation;
 import simulation.common.Images;
+import simulation.pirate.PirateSimulation;
 import simulation.shonenfight.ShonenFightSimulation;
 
 public class ImageFactory {
@@ -34,9 +35,9 @@ public class ImageFactory {
 				return new JLabel(new ImageIcon(Images.anthill));
 			else
 				return new JLabel(new ImageIcon(Images.ile));
-		} else if (imageId.equals("A")) {
+		} else if (imageId.equals("A") && simulation.equals(PirateSimulation.class.getSimpleName())) {
 			return new JLabel(new ImageIcon(Images.tresor));
-		} else if (imageId.equals("G")) {
+		} else if (imageId.equals("G") && simulation.equals(PirateSimulation.class.getSimpleName())) {
 			return new JLabel(new ImageIcon(Images.algue));
 		} else if (imageId.equals("F")) {
 			return new JLabel(new ImageIcon(Images.shonenFlamme));

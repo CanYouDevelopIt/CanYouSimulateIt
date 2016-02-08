@@ -137,10 +137,10 @@ public class PirateMap extends JPanelSimulation {
 				Node node = graph.getNode(j, i);
 				if (node == null) {
 					jpNord.add(imageFactory.getImageLabel(null, null,
-							mainApplicationView.getSimulationEnCours().getClass().getName()));
+							mainApplicationView.getSimulationEnCours().getClass().getSimpleName()));
 				} else {
 					jpNord.add(imageFactory.getImageLabel(node.getId(), node.getIdOrigine(),
-							mainApplicationView.getSimulationEnCours().getClass().getName()));
+							mainApplicationView.getSimulationEnCours().getClass().getSimpleName()));
 				}
 			}
 		}
